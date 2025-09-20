@@ -1,0 +1,30 @@
+# Source files
+src/
+examples/
+
+# Development files
+*.log
+node_modules/
+.DS_Store
+.vscode/
+.idea/
+
+# Build artifacts
+tsup.config.ts
+tsconfig.json
+.eslintrc*
+compatibility-test.md
+
+# Git
+.git
+.gitignore
+
+# Testing
+coverage/
+jest.config.js
+*.test.*
+*.spec.*
+
+# Documentation (except README.md)
+docs/
+.github/

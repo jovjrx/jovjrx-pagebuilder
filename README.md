@@ -32,13 +32,27 @@ JovJrx PageBuilder is a **React component library** that provides a complete vis
 ## 📦 Installation
 
 ```bash
+# npm
 npm install jovjrx-pagebuilder
+
+# yarn
+yarn add jovjrx-pagebuilder
+
+# pnpm  
+pnpm add jovjrx-pagebuilder
 ```
 
-**Peer Dependencies** (install these in your Next.js project):
+**Required peer dependencies:**
 
 ```bash
+# npm
 npm install @chakra-ui/react @emotion/react @emotion/styled framer-motion firebase
+
+# yarn
+yarn add @chakra-ui/react @emotion/react @emotion/styled framer-motion firebase
+
+# pnpm
+pnpm add @chakra-ui/react @emotion/react @emotion/styled framer-motion firebase
 ```
 
 ## 🚀 Quick Start
@@ -190,8 +204,7 @@ service cloud.firestore {
 
 ## 🔗 Links
 
-- **Website:** [jovjrx.com](https://jovjrx.com)
-- **Documentation:** [GitHub Wiki](https://github.com/jovjrx/jovjrx-pagebuilder/wiki)
+- **Website:** [josejunior.com.br](https://josejunior.com.br)
 - **Issues:** [GitHub Issues](https://github.com/jovjrx/jovjrx-pagebuilder/issues)
 - **Changelog:** [Releases](https://github.com/jovjrx/jovjrx-pagebuilder/releases)
 
@@ -205,6 +218,6 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 
 ---
 
-**Built with ❤️ by [JovJrx](https://jovjrx.com)**
+**Built with ❤️ by [José Júnior](https://josejunior.com.br)**
 
 *Transform your Next.js applications with professional page building capabilities.*
