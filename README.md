@@ -506,5 +506,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 **Made with 💜 by JovJrx Team**
 
 Transform your Next.js projects with the most powerful page builder available!
-#   j o v j r x - p a g e b u i l d e r  
- 
+#
