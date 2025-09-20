@@ -19,7 +19,6 @@ export default defineConfig({
     '@emotion/styled',
     'framer-motion',
     'firebase',
-    'react-beautiful-dnd',
     'react-hook-form',
     'zustand'
   ],

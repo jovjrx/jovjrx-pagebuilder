@@ -8,10 +8,8 @@ import {
   IconButton,
   HStack,
   Badge,
-  useColorModeValue,
 } from '@chakra-ui/react'
-import { DeleteIcon, DragHandleIcon, EditIcon } from '@chakra-ui/icons'
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
+import { DeleteIcon, EditIcon, ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { Block } from '../../types'
 import { getTranslation, getMultiLanguageValue } from '../../i18n'
 
@@ -32,14 +30,14 @@ export function BlocksList({
   onReorderBlocks,
   language
 }: BlocksListProps) {
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return
+  const moveBlock = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= blocks.length) return
 
-    const items = Array.from(blocks)
-    const [reorderedItem] = items.splice(result.source.index, 1)
-    items.splice(result.destination.index, 0, reorderedItem)
-
-    onReorderBlocks(items)
+    const newBlocks = [...blocks]
+    const [movedBlock] = newBlocks.splice(index, 1)
+    newBlocks.splice(newIndex, 0, movedBlock)
+    onReorderBlocks(newBlocks)
   }
 
   const getBlockIcon = (blockType: Block['type']) => {
@@ -87,123 +85,129 @@ export function BlocksList({
   }
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="blocks">
-        {(provided) => (
-          <VStack
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            spacing={2}
-            align="stretch"
-          >
-            {blocks.map((block, index) => (
-              <Draggable key={block.id || index} draggableId={block.id || `block-${index}`} index={index}>
-                {(provided, snapshot) => (
-                  <Box
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    bg={selectedBlock?.id === block.id ? 'purple.700' : 'gray.700'}
-                    borderRadius="md"
-                    p={3}
-                    cursor="pointer"
-                    transition="all 0.2s"
-                    _hover={{
-                      bg: selectedBlock?.id === block.id ? 'purple.600' : 'gray.600',
-                      transform: 'translateY(-1px)',
-                    }}
-                    border="2px solid"
-                    borderColor={selectedBlock?.id === block.id ? 'purple.500' : 'transparent'}
-                    opacity={snapshot.isDragging ? 0.8 : 1}
-                    transform={snapshot.isDragging ? 'rotate(5deg)' : 'none'}
-                    onClick={() => onSelectBlock(block)}
-                  >
-                    <HStack spacing={3}>
-                      {/* Drag Handle */}
-                      <Box {...provided.dragHandleProps}>
-                        <DragHandleIcon color="gray.400" boxSize={4} />
-                      </Box>
+    <VStack gap={2} align="stretch">
+      {blocks.map((block, index) => (
+        <Box
+          key={block.id || index}
+          bg={selectedBlock?.id === block.id ? 'purple.900' : 'gray.800'}
+          borderRadius="md"
+          p={3}
+          cursor="pointer"
+          transition="all 0.2s"
+          _hover={{
+            bg: selectedBlock?.id === block.id ? 'purple.800' : 'gray.700',
+            transform: 'translateY(-1px)',
+          }}
+          border="2px solid"
+          borderColor={selectedBlock?.id === block.id ? 'purple.500' : 'transparent'}
+          onClick={() => onSelectBlock(block)}
+        >
+          <HStack gap={3}>
+            {/* Move Controls */}
+            <VStack gap={0}>
+              <IconButton
+                aria-label="Move up"
+                size="xs"
+                variant="ghost"
+                isDisabled={index === 0}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  moveBlock(index, 'up')
+                }}
+              >
+                <ChevronUpIcon />
+              </IconButton>
+              <IconButton
+                aria-label="Move down"
+                size="xs"
+                variant="ghost"
+                isDisabled={index === blocks.length - 1}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  moveBlock(index, 'down')
+                }}
+              >
+                <ChevronDownIcon />
+              </IconButton>
+            </VStack>
 
-                      {/* Block Icon */}
-                      <Text fontSize="lg">{getBlockIcon(block.type)}</Text>
+            {/* Block Icon */}
+            <Text fontSize="lg">{getBlockIcon(block.type)}</Text>
 
-                      {/* Block Info */}
-                      <VStack spacing={1} align="start" flex={1}>
-                        <HStack spacing={2}>
-                          <Text fontSize="sm" fontWeight="semibold" color="white">
-                            {getMultiLanguageValue(block.title, language)}
-                          </Text>
-                          <Badge
-                            size="sm"
-                            colorScheme={getBlockColor(block.type)}
-                            variant="subtle"
-                          >
-                            {getTranslation(`block.${block.type}`, language)}
-                          </Badge>
-                        </HStack>
-                        
-                        <HStack spacing={2}>
-                          <Badge
-                            size="xs"
-                            colorScheme={block.active ? 'green' : 'red'}
-                            variant="solid"
-                          >
-                            {block.active ? 'Ativo' : 'Inativo'}
-                          </Badge>
-                          <Badge
-                            size="xs"
-                            colorScheme={block.version === 'published' ? 'blue' : 'yellow'}
-                            variant="outline"
-                          >
-                            {block.version === 'published' ? 'Publicado' : 'Rascunho'}
-                          </Badge>
-                        </HStack>
-                      </VStack>
+            {/* Block Info */}
+            <VStack gap={1} align="start" flex={1}>
+              <HStack gap={2}>
+                <Text fontSize="sm" fontWeight="semibold" color="white" noOfLines={1}>
+                  {getMultiLanguageValue(block.title, language)}
+                </Text>
+                <Badge
+                  size="sm"
+                  colorScheme={getBlockColor(block.type)}
+                  variant="subtle"
+                >
+                  {block.type}
+                </Badge>
+              </HStack>
+              
+              <HStack gap={2}>
+                <Badge
+                  size="xs"
+                  colorScheme={block.active ? 'green' : 'red'}
+                  variant="solid"
+                >
+                  {block.active ? 'Ativo' : 'Inativo'}
+                </Badge>
+                <Badge
+                  size="xs"
+                  colorScheme={block.version === 'published' ? 'blue' : 'yellow'}
+                  variant="outline"
+                >
+                  {block.version === 'published' ? 'Publicado' : 'Rascunho'}
+                </Badge>
+              </HStack>
+            </VStack>
 
-                      {/* Actions */}
-                      <VStack spacing={1}>
-                        <IconButton
-                          aria-label="Edit block"
-                          icon={<EditIcon />}
-                          size="xs"
-                          variant="ghost"
-                          colorScheme="blue"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onSelectBlock(block)
-                          }}
-                        />
-                        <IconButton
-                          aria-label="Delete block"
-                          icon={<DeleteIcon />}
-                          size="xs"
-                          variant="ghost"
-                          colorScheme="red"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (block.id && confirm('Tem certeza que deseja excluir este bloco?')) {
-                              onDeleteBlock(block.id)
-                            }
-                          }}
-                        />
-                      </VStack>
-                    </HStack>
+            {/* Actions */}
+            <VStack gap={1}>
+              <IconButton
+                aria-label="Edit block"
+                size="xs"
+                variant="ghost"
+                colorScheme="blue"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelectBlock(block)
+                }}
+              >
+                <EditIcon />
+              </IconButton>
+              <IconButton
+                aria-label="Delete block"
+                size="xs"
+                variant="ghost"
+                colorScheme="red"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (block.id && confirm('Tem certeza que deseja excluir este bloco?')) {
+                    onDeleteBlock(block.id)
+                  }
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </VStack>
+          </HStack>
 
-                    {/* Block Preview Info */}
-                    {block.content.length > 0 && (
-                      <Box mt={2} pt={2} borderTop="1px solid" borderColor="gray.600">
-                        <Text fontSize="xs" color="gray.400">
-                          {block.content.length} elemento{block.content.length !== 1 ? 's' : ''}
-                        </Text>
-                      </Box>
-                    )}
-                  </Box>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </VStack>
-        )}
-      </Droppable>
-    </DragDropContext>
+          {/* Block Content Info */}
+          {block.content.length > 0 && (
+            <Box mt={2} pt={2} borderTop="1px solid" borderColor="gray.600">
+              <Text fontSize="xs" color="gray.400">
+                {block.content.length} elemento{block.content.length !== 1 ? 's' : ''}
+              </Text>
+            </Box>
+          )}
+        </Box>
+      ))}
+    </VStack>
   )
 }

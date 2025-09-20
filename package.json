@@ -1,7 +1,7 @@
 {
   "name": "jovjrx-pagebuilder",
-  "version": "1.0.0",
-  "description": "Universal Page Builder for Next.js with Firebase - Dark Purple Theme",
+  "version": "1.0.1",
+  "description": "Universal Page Builder for Next.js with Firebase - React 19 Compatible",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -54,20 +54,19 @@
   },
   "homepage": "https://github.com/jovjrx/jovjrx-pagebuilder#readme",
   "peerDependencies": {
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "next": ">=13.0.0",
     "@chakra-ui/react": "^2.8.0",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "firebase": ">=9.0.0",
     "framer-motion": ">=6.0.0",
-    "firebase": ">=9.0.0"
+    "next": ">=13.0.0",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@types/node": "^20.0.0",
-    "@types/react-beautiful-dnd": "^13.1.8",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.0.0",
@@ -78,7 +77,9 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.1.0",
-    "react-beautiful-dnd": "^13.1.1",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "react-hook-form": "^7.45.0",
     "zustand": "^4.4.0"
   },
