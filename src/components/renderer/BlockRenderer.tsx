@@ -5,15 +5,16 @@ import { Box } from '@chakra-ui/react'
 import { Block, PageBuilderTheme } from '../../types'
 import { HeroBlock } from '../blocks/HeroBlock'
 import { FeaturesBlock } from '../blocks/FeaturesBlock'
-import { TestimonialsBlock } from '../blocks/TestimonialsBlock'
-import { PricingBlock } from '../blocks/PricingBlock'
-import { FAQBlock } from '../blocks/FAQBlock'
-import { StatsBlock } from '../blocks/StatsBlock'
 import { TextBlock } from '../blocks/TextBlock'
 import { MediaBlock } from '../blocks/MediaBlock'
-import { ListBlock } from '../blocks/ListBlock'
 import { ActionsBlock } from '../blocks/ActionsBlock'
-import { TimerBlock } from '../blocks/TimerBlock'
+// TODO: Import when implemented
+// import { TestimonialsBlock } from '../blocks/TestimonialsBlock'
+// import { PricingBlock } from '../blocks/PricingBlock'
+// import { FAQBlock } from '../blocks/FAQBlock'
+// import { StatsBlock } from '../blocks/StatsBlock'
+// import { ListBlock } from '../blocks/ListBlock'
+// import { TimerBlock } from '../blocks/TimerBlock'
 
 interface BlockRendererProps {
   block: Block
@@ -65,16 +66,27 @@ export function BlockRenderer({
         return <FeaturesBlock {...commonProps} />
       
       case 'testimonials':
-        return <TestimonialsBlock {...commonProps} />
-      
       case 'pricing':
-        return <PricingBlock {...commonProps} />
-      
       case 'faq':
-        return <FAQBlock {...commonProps} />
-      
       case 'stats':
-        return <StatsBlock {...commonProps} />
+      case 'list':
+      case 'timer':
+        // TODO: Implement missing block components
+        return (
+          <Box
+            bg={blockTheme.colors.surface}
+            color={blockTheme.colors.text}
+            p={6}
+            borderRadius="md"
+            border="2px dashed"
+            borderColor={blockTheme.colors.border}
+            textAlign="center"
+          >
+            <Box>
+              Block type "{block.type}" is not implemented yet.
+            </Box>
+          </Box>
+        )
       
       case 'text':
         return <TextBlock {...commonProps} />
@@ -82,14 +94,8 @@ export function BlockRenderer({
       case 'media':
         return <MediaBlock {...commonProps} />
       
-      case 'list':
-        return <ListBlock {...commonProps} />
-      
       case 'actions':
         return <ActionsBlock {...commonProps} />
-      
-      case 'timer':
-        return <TimerBlock {...commonProps} />
       
       default:
         // Fallback for unknown block types

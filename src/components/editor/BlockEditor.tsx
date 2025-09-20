@@ -23,6 +23,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   useToast,
+  Stack,
 } from '@chakra-ui/react'
 import { AddIcon, DeleteIcon, ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { Block, Content, TextContent, MediaContentBlock, ListContent, ActionsContent, TimerContent } from '../../types'
@@ -144,31 +145,34 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
   const renderContentEditor = (content: Content, index: number) => {
     const commonActions = (
-      <HStack spacing={1}>
+            <HStack gap={1}>
         <IconButton
           aria-label="Move up"
-          icon={<ChevronUpIcon />}
           size="xs"
           variant="ghost"
           isDisabled={index === 0}
           onClick={() => moveContent(index, 'up')}
-        />
+        >
+          <ChevronUpIcon />
+        </IconButton>
         <IconButton
           aria-label="Move down"
-          icon={<ChevronDownIcon />}
           size="xs"
           variant="ghost"
           isDisabled={index === block.content.length - 1}
           onClick={() => moveContent(index, 'down')}
-        />
+        >
+          <ChevronDownIcon />
+        </IconButton>
         <IconButton
-          aria-label="Delete"
-          icon={<DeleteIcon />}
+          aria-label="Delete content"
           size="xs"
           variant="ghost"
           colorScheme="red"
           onClick={() => deleteContent(index)}
-        />
+        >
+          <DeleteIcon />
+        </IconButton>
       </HStack>
     )
 

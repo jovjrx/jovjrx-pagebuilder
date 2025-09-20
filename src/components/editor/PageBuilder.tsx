@@ -116,7 +116,7 @@ export function PageBuilder({
     try {
       const pageData = {
         ...page,
-        blocks: blocks.map(block => block.id).filter(Boolean), // Save only block IDs
+        blocks: blocks, // Save full blocks data
       }
       
       await savePage(pageId, pageData, collection)

@@ -3,7 +3,9 @@ import { defineConfig } from 'tsup'
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
-  dts: true,
+  dts: {
+    resolve: true
+  },
   splitting: false,
   sourcemap: true,
   clean: true,
@@ -12,12 +14,19 @@ export default defineConfig({
     'react-dom',
     'next',
     '@chakra-ui/react',
+    '@chakra-ui/icons',
     '@emotion/react',
     '@emotion/styled',
     'framer-motion',
-    'firebase'
+    'firebase',
+    'react-beautiful-dnd',
+    'react-hook-form',
+    'zustand'
   ],
   banner: {
     js: '"use client";'
+  },
+  esbuildOptions(options) {
+    options.jsx = 'preserve'
   }
 })
