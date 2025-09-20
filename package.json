@@ -1,0 +1,75 @@
+{
+  "name": "jovjrx-pagebuilder",
+  "version": "1.0.0",
+  "description": "Universal Page Builder for Next.js with Firebase - Dark Purple Theme",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "nextjs",
+    "page-builder",
+    "firebase",
+    "react",
+    "typescript",
+    "chakra-ui",
+    "dark-theme",
+    "purple",
+    "multi-language",
+    "i18n",
+    "drag-drop",
+    "visual-editor",
+    "landing-page",
+    "conversion-optimized"
+  ],
+  "author": "JovJrx",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jovjrx/jovjrx-pagebuilder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jovjrx/jovjrx-pagebuilder/issues"
+  },
+  "homepage": "https://github.com/jovjrx/jovjrx-pagebuilder#readme",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "next": ">=13.0.0",
+    "@chakra-ui/react": ">=2.0.0",
+    "@emotion/react": ">=11.0.0",
+    "@emotion/styled": ">=11.0.0",
+    "framer-motion": ">=6.0.0",
+    "firebase": ">=9.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "tsup": "^7.2.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.1.0",
+    "react-beautiful-dnd": "^13.1.1",
+    "react-hook-form": "^7.45.0",
+    "zustand": "^4.4.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
