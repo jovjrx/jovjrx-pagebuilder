@@ -696,6 +696,8 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
               <option value="faq">Perguntas (FAQ)</option>
               <option value="plan">Plano/Preço</option>
               <option value="benefit">Benefício</option>
+              <option value="stat">Estatística/KPI</option>
+              <option value="detail">Detalhe/Definição</option>
             </Select>
           </FormControl>
 

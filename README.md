@@ -196,6 +196,12 @@ service cloud.firestore {
 
 ## Changelog
 
+- 1.7.0
+  - Model: Unify list-based content under `type: 'list'` with roles: `feature | testimonial | faq | plan | benefit | stat | detail`.
+  - Renderer: Single list renderer branches by `role`. Removed legacy separate content items (features, statistics, details, testimonials).
+  - Editor: List role selector now includes `stat` and `detail`. Actions, media, text, timer unchanged.
+  - Scripts: Seeding script updated to use unified list roles.
+
 - 1.6.3
   - Fix: Actions now render both primary and secondary consistently inside Content blocks using ActionRenderer
   - Fix: Editor Conteúdo tab now supports adding and editing List and Timer content types

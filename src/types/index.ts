@@ -83,7 +83,7 @@ export interface MediaContentBlock {
 
 export interface ListContent {
   type: 'list'
-  role: 'feature' | 'testimonial' | 'faq' | 'plan' | 'benefit'
+  role: 'feature' | 'testimonial' | 'faq' | 'plan' | 'benefit' | 'stat' | 'detail'
   items: ListItem[]
   order: number
 }
@@ -99,58 +99,6 @@ export interface ActionsContent {
     endDate?: string
     quantity?: number
   }
-  order: number
-}
-
-/**
- * Additional content types for flexible composition inside Content blocks
- */
-export interface FeaturesContent {
-  type: 'features'
-  items: Array<{
-    icon?: string
-    title: MultiLanguageContent
-    text?: MultiLanguageContent
-    media?: MediaContent
-    badge?: MultiLanguageContent
-    link?: { text: MultiLanguageContent; url: string }
-  }>
-  order: number
-}
-
-export interface StatisticsContent {
-  type: 'statistics'
-  items: Array<{
-    label: MultiLanguageContent
-    value: string
-    unit?: string
-    trend?: 'up' | 'down' | 'neutral'
-    color?: string
-  }>
-  order: number
-}
-
-export interface DetailsContent {
-  type: 'details'
-  accordion?: boolean
-  items: Array<{
-    term: MultiLanguageContent
-    description: MultiLanguageContent
-    icon?: string
-    media?: MediaContent
-  }>
-  order: number
-}
-
-export interface TestimonialsContent {
-  type: 'testimonials'
-  items: Array<{
-    quote: MultiLanguageContent
-    authorName: string
-    authorRole?: string
-    avatarUrl?: string
-    rating?: number
-  }>
   order: number
 }
 
@@ -178,16 +126,12 @@ export type Content =
   | MediaContentBlock
   | ActionsContent
   | ListContent
-  | FeaturesContent
-  | StatisticsContent
-  | DetailsContent
-  | TestimonialsContent
   | HTMLContentItem
   | TimerContent // deprecated, kept temporarily for compatibility
 
 export interface ListItem {
   id?: string
-  role: 'feature' | 'testimonial' | 'faq' | 'plan' | 'benefit'
+  role: 'feature' | 'testimonial' | 'faq' | 'plan' | 'benefit' | 'stat' | 'detail'
   title: MultiLanguageContent
   subtitle?: MultiLanguageContent
   text?: MultiLanguageContent
