@@ -1,10 +1,12 @@
 import { initializeApp, FirebaseApp, getApps } from 'firebase/app'
 import { getFirestore, Firestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, getDocs, serverTimestamp } from 'firebase/firestore'
+import { getStorage, FirebaseStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
 import { FirebaseConfig, Page, Block } from '../types'
 
 // Firebase instance management
 let firebaseApp: FirebaseApp | null = null
 let firestore: Firestore | null = null
+let storage: FirebaseStorage | null = null
 
 export function initializeFirebase(config: FirebaseConfig): FirebaseApp {
   // Check if Firebase is already initialized
@@ -16,6 +18,7 @@ export function initializeFirebase(config: FirebaseConfig): FirebaseApp {
   }
   
   firestore = getFirestore(firebaseApp)
+  storage = getStorage(firebaseApp)
   return firebaseApp
 }
 
@@ -24,6 +27,16 @@ export function getFirestoreInstance(): Firestore {
     throw new Error('Firebase not initialized. Call initializeFirebase first.')
   }
   return firestore
+}
+
+export function getStorageInstance(): FirebaseStorage {
+  if (!firebaseApp) {
+    throw new Error('Firebase not initialized. Call initializeFirebase first.')
+  }
+  if (!storage) {
+    storage = getStorage(firebaseApp)
+  }
+  return storage
 }
 
 // Page operations
@@ -167,6 +180,36 @@ export function generatePageId(): string {
 
 export function generateBlockId(): string {
   return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+}
+
+// Storage helpers
+export async function uploadMediaFile(
+  file: File,
+  pathPrefix: string = 'uploads',
+  onProgress?: (progress: number) => void
+): Promise<{ url: string; fullPath: string; contentType: string }> {
+  const st = getStorageInstance()
+  const ext = file.name.includes('.') ? file.name.split('.').pop() : undefined
+  const safeExt = ext ? `.${ext}` : ''
+  const uniqueName = `${Date.now()}_${Math.random().toString(36).slice(2)}${safeExt}`
+  const fullPath = `${pathPrefix}/${uniqueName}`
+  const storageRef = ref(st, fullPath)
+  const uploadTask = uploadBytesResumable(storageRef, file)
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      'state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        onProgress?.(Math.round(progress))
+      },
+      (error) => reject(error),
+      async () => {
+        const url = await getDownloadURL(uploadTask.snapshot.ref)
+        resolve({ url, fullPath: uploadTask.snapshot.ref.fullPath, contentType: file.type })
+      }
+    )
+  })
 }
 
 // Blocks-only mode functions

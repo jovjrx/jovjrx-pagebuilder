@@ -147,6 +147,12 @@ export interface BlockLayout {
   columns?: number
   align: 'start' | 'center' | 'end'
   spacing?: 'tight' | 'normal' | 'loose'
+  /** Container behavior for the block section */
+  container?: 'boxed' | 'fluid' | 'none'
+  /** Predefined columns count or custom template columns */
+  gridColumns?: 1 | 2 | 3 | 4
+  templateColumns?: string // e.g. '2fr 1fr' or 'repeat(3, 1fr)'
+  gap?: string // e.g. '16px' | theme token
 }
 
 export interface BlockTheme {
@@ -238,6 +244,8 @@ export interface BlocksEditorConfig {
   customActions?: React.ReactNode
   saveButtonText?: string
   saveButtonColor?: string
+  /** Controls the size of the Save button */
+  saveButtonSize?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
 export interface BlocksRendererConfig {

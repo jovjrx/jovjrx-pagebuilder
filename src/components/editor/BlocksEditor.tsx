@@ -56,6 +56,7 @@ export function BlocksEditor({
   customActions,
   saveButtonText,
   saveButtonColor = 'green',
+  saveButtonSize = 'sm',
 }: BlocksEditorConfig) {
   
   // State
@@ -323,7 +324,7 @@ export function BlocksEditor({
                   isLoading={isSaving}
                   loadingText={getTranslation('message.loading', currentLanguage)}
                   colorScheme={saveButtonColor}
-                  size="sm"
+                  size={saveButtonSize}
                 >
                   {saveButtonText || getTranslation('editor.save', currentLanguage)}
                 </Button>
@@ -336,32 +337,68 @@ export function BlocksEditor({
         </Box>
       )}
 
-      {/* Main Content */}
-      <HStack align="stretch" spacing={0} h={hideHeader ? "100vh" : "calc(100vh - 73px)"}>
-        {/* Blocks List */}
-        <Box w="300px" bg="gray.800" borderRadius="lg" m={2}>
-          <VStack spacing={4} p={4} align="stretch">
+      {/* Main Content - Vertical layout with top carousel and editor below */}
+      <VStack align="stretch" spacing={4} h={hideHeader ? "100vh" : "calc(100vh - 73px)"} p={4}>
+        {/* Horizontal Blocks Carousel */}
+        <Box position="relative">
+          {/* Edge fade */}
+          <Box position="absolute" left={0} top={0} bottom={0} w="32px" bgGradient="linear(to-r, rgba(17,24,39,1), rgba(17,24,39,0))" pointerEvents="none" zIndex={1} />
+          <Box position="absolute" right={0} top={0} bottom={0} w="32px" bgGradient="linear(to-l, rgba(17,24,39,1), rgba(17,24,39,0))" pointerEvents="none" zIndex={1} />
+
+          <HStack
+            spacing={3}
+            overflowX="auto"
+            py={3}
+            px={2}
+            sx={{
+              scrollSnapType: 'x mandatory',
+              '& > *': { scrollSnapAlign: 'start' },
+              '::-webkit-scrollbar': { height: '8px' },
+              '::-webkit-scrollbar-thumb': { background: '#3b3b3b', borderRadius: '999px' },
+              '::-webkit-scrollbar-track': { background: '#1f2937' },
+            }}
+          >
             <Button
               leftIcon={<AddIcon />}
               colorScheme="purple"
               variant="outline"
               size="sm"
               onClick={onBlockTypeModalOpen}
+              _hover={{ transform: 'translateY(-1px)' }}
+              _active={{ transform: 'translateY(0px) scale(0.98)' }}
+              transition="all 0.15s ease"
             >
               {getTranslation('editor.addBlock', currentLanguage)}
             </Button>
 
-            <Divider borderColor="gray.600" />
-
-            <BlocksList
-              blocks={blocks}
-              selectedBlock={selectedBlock}
-              onSelectBlock={setSelectedBlock}
-              onDeleteBlock={handleDeleteBlock}
-              onReorderBlocks={handleReorderBlocks}
-              language={currentLanguage}
-            />
-          </VStack>
+            {blocks.map((block) => (
+              <Box
+                key={block.id}
+                minW="240px"
+                maxW="240px"
+                bg={selectedBlock?.id === block.id ? 'purple.700' : 'gray.800'}
+                border="1px solid"
+                borderColor={selectedBlock?.id === block.id ? 'purple.400' : 'gray.700'}
+                borderRadius="lg"
+                p={4}
+                cursor="pointer"
+                onClick={() => setSelectedBlock(block)}
+                _hover={{ borderColor: 'purple.300' }}
+              >
+                <HStack justify="space-between" mb={2}>
+                  <Heading size="sm" noOfLines={1}>
+                    {block.title?.[currentLanguage] || Object.values(block.title || {})[0] || 'Sem título'}
+                  </Heading>
+                  <Text fontSize="xs" opacity={0.8}>
+                    {block.type.toUpperCase()}
+                  </Text>
+                </HStack>
+                <Text fontSize="xs" color="gray.300" noOfLines={2}>
+                  {block.description?.[currentLanguage] || block.subtitle?.[currentLanguage] || ''}
+                </Text>
+              </Box>
+            ))}
+          </HStack>
         </Box>
 
         {/* Block Editor */}
@@ -395,7 +432,7 @@ export function BlocksEditor({
             </Box>
           )}
         </Box>
-      </HStack>
+      </VStack>
 
       {/* Block Type Selection Modal */}
       <Modal isOpen={isBlockTypeModalOpen} onClose={onBlockTypeModalClose} isCentered>

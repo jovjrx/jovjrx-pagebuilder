@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Box, VStack, Heading, Text, Container } from '@chakra-ui/react'
+import { Box, VStack, Heading, Text, Container, Grid, SimpleGrid } from '@chakra-ui/react'
 import { Block, PageBuilderTheme, TextContent, MediaContentBlock, ListContent, ActionsContent, TimerContent } from '../../types'
 import { HTMLContent } from '../ui/HTMLContent'
 import { TextBlock } from './TextBlock'
@@ -211,14 +211,33 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
     }
   }
 
+  // Layout helpers
+  const containerMode: 'boxed' | 'fluid' | 'none' = (block.layout?.container as any) || 'boxed'
+  const isGrid = block.layout?.variant === 'grid'
+  const gapValue = block.layout?.gap || 6
+
+  const ContentWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    if (containerMode === 'none') {
+      return <>{children}</>
+    }
+    if (containerMode === 'fluid') {
+      return (
+        <Box maxW="100%" mx="auto">
+          {children}
+        </Box>
+      )
+    }
+    return <Container maxW="4xl">{children}</Container>
+  }
+
   return (
     <Box
       bg={block.theme?.background || theme.colors.background}
       color={block.theme?.text || theme.colors.text}
-      py={{ base: 12, md: 16 }}
-      px={4}
+      py={containerMode === 'none' ? 0 : { base: 12, md: 16 }}
+      px={containerMode === 'none' ? 0 : 4}
     >
-      <Container maxW="4xl">
+      <ContentWrapper>
         <VStack spacing={6} align="stretch">
           {/* Block Header */}
           {(title || subtitle || description) && (
@@ -254,9 +273,21 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
 
           {/* Block Content */}
           {sortedContent.length > 0 ? (
-            <VStack spacing={6} align="stretch">
-              {sortedContent.map(renderContentItem)}
-            </VStack>
+            isGrid ? (
+              block.layout?.templateColumns ? (
+                <Grid templateColumns={block.layout.templateColumns} gap={gapValue}>
+                  {sortedContent.map(renderContentItem)}
+                </Grid>
+              ) : (
+                <SimpleGrid columns={block.layout?.gridColumns || 2} spacing={gapValue}>
+                  {sortedContent.map(renderContentItem)}
+                </SimpleGrid>
+              )
+            ) : (
+              <VStack spacing={6} align="stretch">
+                {sortedContent.map(renderContentItem)}
+              </VStack>
+            )
           ) : (
             <Box
               p={8}
@@ -270,7 +301,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
             </Box>
           )}
         </VStack>
-      </Container>
+      </ContentWrapper>
     </Box>
   )
 }

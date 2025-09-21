@@ -184,6 +184,53 @@ function CustomBlockRenderer({
 }
 ```
 
+## ☁️ Firebase Storage (Uploads)
+
+Para habilitar upload de mídia na interface do editor, configure o Firebase Storage:
+
+- Inclua `storageBucket` no objeto de configuração do Firebase (ex.: `meu-projeto.appspot.com`).
+- Inicialize o Firebase com `initializeFirebase(firebaseConfig)` antes de usar o editor/renderer.
+- Regras: Ajuste as regras do Storage para permitir upload autenticado com caminho restrito.
+
+A função `uploadMediaFile(file, pathPrefix?, onProgress?)` realiza upload com recomeço (resumable) e retorna `{ url, fullPath, contentType }`. O editor usa por padrão caminhos como `blocks/{blockId}/media`.
+
+Sugestão de convenções de caminho:
+
+- Modo páginas: `pages/{pageId}/blocks/{blockId}`
+- Modo somente blocos: `blocks/{parentId}/{blockId}`
+
+Exemplo rápido:
+
+```ts
+import { initializeFirebase, uploadMediaFile } from 'jovjrx-pagebuilder'
+
+initializeFirebase({
+  apiKey: '...',
+  authDomain: '...',
+  projectId: '...',
+  storageBucket: 'meu-projeto.appspot.com',
+  messagingSenderId: '...',
+  appId: '...'
+})
+
+const { url } = await uploadMediaFile(file, `blocks/${block.id}/media`, (p) => console.log('progress', p))
+```
+
+## 📐 Layout: container e templates de grid
+
+Os blocos possuem a propriedade `layout.container` que controla o wrapper:
+
+- `boxed` (padrão): usa Container centralizado.
+- `fluid`: largura total (100%).
+- `none`: sem container, permitindo conteúdo full-bleed e templates customizados.
+
+Quando `layout.variant` for `'grid'`, você pode:
+
+- Usar `gridColumns` (1–4) para um SimpleGrid responsivo, ou
+- Usar `templateColumns` (ex.: `2fr 1fr`, `repeat(3, 1fr)`) para um Grid customizado.
+
+Use `gap` para o espaçamento entre colunas/itens. O `BlockRenderer` e o `ContentBlock` já respeitam essas configurações.
+
 ### Exemplo 2: Renderizador de Conteúdo
 
 ```typescript

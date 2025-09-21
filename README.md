@@ -215,6 +215,13 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📋 Changelog
 
+### v1.6.0 - Uploads + Layout Templates (September 2025)
+- ✨ Media upload dropzone integrated in editor with progress
+- ☁️ Firebase Storage helper `uploadMediaFile(file, pathPrefix?, onProgress?)`
+- 🧩 Layout: `layout.container = 'boxed'|'fluid'|'none'`
+- 🧱 Grid support via `gridColumns` or `templateColumns` with `gap`
+- 🛠️ Renderer and ContentBlock updated to respect container/template settings
+
 ### v1.5.0 - Architectural Refactoring (September 2025)
 - 🔥 **BREAKING**: Refactored Block.type architecture for better clarity
 - ✨ **NEW**: CTABlock component for optimized call-to-action layouts

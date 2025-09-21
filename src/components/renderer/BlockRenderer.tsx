@@ -137,6 +137,10 @@ export function BlockRenderer({
       data-block-type={block.type}
       data-block-id={block.id}
       position="relative"
+      // If container is 'none', let the child block control full-bleed layout
+      px={block.layout?.container === 'none' ? 0 : undefined}
+      py={block.layout?.container === 'none' ? 0 : undefined}
+      w="full"
     >
       {renderBlock()}
     </Box>
