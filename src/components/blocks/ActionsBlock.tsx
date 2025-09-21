@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Block, PageBuilderTheme, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
-import { PurchaseButton } from '../ui/PurchaseButton'
+import { ActionRenderer } from '../shared/ActionRenderer'
 
 interface ActionsBlockProps {
   block: Block
@@ -21,10 +21,11 @@ interface ActionsBlockProps {
   language: string
   onPurchase?: (productId: string, productData: any) => void | Promise<void>
   onAddToCart?: (productId: string, productData: any) => void | Promise<void>
-  customPurchaseButton?: React.ComponentType<any>
+  purchaseButton?: any // PurchaseButtonConfig
+  customPurchaseButton?: React.ReactNode
 }
 
-export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart, customPurchaseButton }: ActionsBlockProps) {
+export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart, purchaseButton, customPurchaseButton }: ActionsBlockProps) {
   const actionsContent = block.content.find(c => c.type === 'actions') as ActionsContent | undefined
   
   if (!actionsContent) return null
@@ -58,67 +59,20 @@ export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart, 
             )}
           </VStack>
 
-          {/* Action Buttons */}
-          <VStack spacing={4} align="center">
-            {/* Primary Action */}
-            {primary.action === 'buy' && primary.price && onPurchase ? (
-              (() => {
-                const CustomButton = customPurchaseButton || PurchaseButton
-                return (
-                  <CustomButton
-                    productId={block.id || 'unknown'}
-                    productName={getMultiLanguageValue(block.title, language)}
-                    price={primary.price}
-                    text={getMultiLanguageValue(primary.text, language)}
-                    colorScheme="purple"
-                    size="lg"
-                    onPurchase={onPurchase}
-                    onAddToCart={onAddToCart}
-                  />
-                )
-              })()
-            ) : (
-              <Button
-                size="lg"
-                colorScheme="purple"
-                as="a"
-                href={primary.url}
-                px={8}
-                py={6}
-                fontSize="lg"
-                fontWeight="bold"
-              >
-                {getMultiLanguageValue(primary.text, language)}
-              </Button>
-            )}
-
-            {/* Secondary Action */}
-            {secondary && (
-              <Button
-                size="lg"
-                variant="outline"
-                colorScheme="gray"
-                as="a"
-                href={secondary.url}
-              >
-                {getMultiLanguageValue(secondary.text, language)}
-              </Button>
-            )}
-          </VStack>
-
-          {/* Benefits */}
-          {benefits && benefits.length > 0 && (
-            <VStack spacing={2}>
-              {benefits.map((benefit, index) => (
-                <HStack key={index} spacing={2}>
-                  <Box color={theme.colors.primary}>✓</Box>
-                  <Text fontSize="sm" color={theme.colors.textSecondary}>
-                    {getMultiLanguageValue(benefit, language)}
-                  </Text>
-                </HStack>
-              ))}
-            </VStack>
-          )}
+          {/* Actions using ActionRenderer */}
+          <ActionRenderer
+            actionsContent={actionsContent}
+            block={block}
+            theme={theme}
+            language={language}
+            onPurchase={onPurchase}
+            onAddToCart={onAddToCart}
+            purchaseButton={purchaseButton}
+            customPurchaseButton={customPurchaseButton}
+            align="center"
+            direction="column"
+            spacing={4}
+          />
         </VStack>
       </Container>
     </Box>

@@ -24,7 +24,8 @@ interface BlockRendererProps {
   isLast?: boolean
   onPurchase?: (productId: string, productData: any) => void | Promise<void>
   onAddToCart?: (productId: string, productData: any) => void | Promise<void>
-  customPurchaseButton?: React.ComponentType<any>
+  purchaseButton?: any // PurchaseButtonConfig
+  customPurchaseButton?: React.ReactNode
 }
 
 export function BlockRenderer({ 
@@ -35,6 +36,7 @@ export function BlockRenderer({
   isLast = false,
   onPurchase,
   onAddToCart,
+  purchaseButton,
   customPurchaseButton
 }: BlockRendererProps) {
   // Don't render inactive blocks
@@ -62,6 +64,7 @@ export function BlockRenderer({
     isLast,
     onPurchase,
     onAddToCart,
+    purchaseButton,
     customPurchaseButton,
   }
 

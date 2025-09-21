@@ -9,17 +9,23 @@ import {
   Text,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { Block, PageBuilderTheme, TextContent } from '../../types'
+import { Block, PageBuilderTheme, TextContent, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
+import { ActionRenderer } from '../shared/ActionRenderer'
 
 interface TextBlockProps {
   block: Block
   theme: PageBuilderTheme
   language: string
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  purchaseButton?: any
+  customPurchaseButton?: React.ReactNode
 }
 
-export function TextBlock({ block, theme, language }: TextBlockProps) {
+export function TextBlock({ block, theme, language, onPurchase, onAddToCart, purchaseButton, customPurchaseButton }: TextBlockProps) {
   const textContent = block.content.filter(c => c.type === 'text') as TextContent[]
+  const actionsContent = block.content.find(c => c.type === 'actions') as ActionsContent | undefined
   
   const containerMaxW = useBreakpointValue({ base: 'container.sm', md: 'container.md' })
   const textAlign = block.layout?.align || 'center'
@@ -73,6 +79,23 @@ export function TextBlock({ block, theme, language }: TextBlockProps) {
                 )
             }
           })}
+          
+          {/* Actions */}
+          {actionsContent && (
+            <ActionRenderer
+              actionsContent={actionsContent}
+              block={block}
+              theme={theme}
+              language={language}
+              onPurchase={onPurchase}
+              onAddToCart={onAddToCart}
+              purchaseButton={purchaseButton}
+              customPurchaseButton={customPurchaseButton}
+              align={textAlign as 'left' | 'center' | 'right'}
+              direction="column"
+              spacing={4}
+            />
+          )}
         </VStack>
       </Container>
     </Box>

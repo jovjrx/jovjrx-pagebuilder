@@ -12,8 +12,9 @@ import {
   Icon,
   useBreakpointValue,
 } from '@chakra-ui/react'
-import { Block, PageBuilderTheme, ListContent } from '../../types'
+import { Block, PageBuilderTheme, ListContent, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
+import { ActionRenderer } from '../shared/ActionRenderer'
 
 interface FeaturesBlockProps {
   block: Block
@@ -21,12 +22,17 @@ interface FeaturesBlockProps {
   language: string
   isFirst?: boolean
   isLast?: boolean
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  purchaseButton?: any
+  customPurchaseButton?: React.ReactNode
 }
 
-export function FeaturesBlock({ block, theme, language }: FeaturesBlockProps) {
+export function FeaturesBlock({ block, theme, language, onPurchase, onAddToCart, purchaseButton, customPurchaseButton }: FeaturesBlockProps) {
   // Extract features from list content
   const featuresContent = block.content.find(c => c.type === 'list' && c.role === 'feature') as ListContent | undefined
   const features = featuresContent?.items || []
+  const actionsContent = block.content.find(c => c.type === 'actions') as ActionsContent | undefined
 
   // Get main texts
   const title = getMultiLanguageValue(block.title, language)
@@ -252,12 +258,21 @@ export function FeaturesBlock({ block, theme, language }: FeaturesBlockProps) {
           </SimpleGrid>
 
           {/* Bottom CTA (if available) */}
-          {block.content.find(c => c.type === 'actions') && (
-            <VStack spacing={4} textAlign="center">
-              <Text color={theme.colors.textSecondary}>
-                Pronto para começar?
-              </Text>
-              {/* Action buttons would be rendered here */}
+          {actionsContent && (
+            <VStack spacing={6} textAlign="center">
+              <ActionRenderer
+                actionsContent={actionsContent}
+                block={block}
+                theme={theme}
+                language={language}
+                onPurchase={onPurchase}
+                onAddToCart={onAddToCart}
+                purchaseButton={purchaseButton}
+                customPurchaseButton={customPurchaseButton}
+                align="center"
+                direction="column"
+                spacing={4}
+              />
             </VStack>
           )}
         </VStack>

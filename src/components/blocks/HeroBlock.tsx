@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { Block, PageBuilderTheme, TextContent, MediaContentBlock, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
+import { ActionRenderer } from '../shared/ActionRenderer'
 
 interface HeroBlockProps {
   block: Block
@@ -24,9 +25,13 @@ interface HeroBlockProps {
   language: string
   isFirst?: boolean
   isLast?: boolean
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  purchaseButton?: any
+  customPurchaseButton?: React.ReactNode
 }
 
-export function HeroBlock({ block, theme, language, isFirst }: HeroBlockProps) {
+export function HeroBlock({ block, theme, language, isFirst, onPurchase, onAddToCart, purchaseButton, customPurchaseButton }: HeroBlockProps) {
   // Extract content by type
   const textContent = block.content.filter(c => c.type === 'text') as TextContent[]
   const mediaContent = block.content.find(c => c.type === 'media') as MediaContentBlock | undefined
@@ -122,83 +127,20 @@ export function HeroBlock({ block, theme, language, isFirst }: HeroBlockProps) {
   const renderActions = () => {
     if (!actionsContent) return null
 
-    const { primary, secondary, benefits, urgency } = actionsContent
-
     return (
-      <VStack spacing={4} align={isMobile ? 'center' : 'start'}>
-        {/* Action Buttons */}
-        <HStack spacing={4} flexWrap="wrap" justify={isMobile ? 'center' : 'start'}>
-          <Button
-            size="lg"
-            colorScheme={primary.style === 'primary' ? 'purple' : 'gray'}
-            variant={primary.style === 'outline' ? 'outline' : 'solid'}
-            as="a"
-            href={primary.url}
-            px={8}
-            py={6}
-            fontSize="lg"
-            fontWeight="bold"
-            borderRadius={theme.borderRadius.lg}
-            shadow="lg"
-            _hover={{
-              transform: 'translateY(-2px)',
-              shadow: 'xl',
-            }}
-            transition="all 0.2s"
-          >
-            {getMultiLanguageValue(primary.text, language)}
-            {primary.price && (
-              <Text as="span" ml={2} fontSize="sm" opacity={0.9}>
-                {primary.price.currency} {primary.price.amount}
-              </Text>
-            )}
-          </Button>
-
-          {secondary && (
-            <Button
-              size="lg"
-              variant="outline"
-              colorScheme="gray"
-              as="a"
-              href={secondary.url}
-              px={6}
-              py={6}
-              fontSize="md"
-              borderRadius={theme.borderRadius.lg}
-            >
-              {getMultiLanguageValue(secondary.text, language)}
-            </Button>
-          )}
-        </HStack>
-
-        {/* Benefits */}
-        {benefits && benefits.length > 0 && (
-          <VStack spacing={2} align={isMobile ? 'center' : 'start'}>
-            {benefits.map((benefit, index) => (
-              <HStack key={index} spacing={2}>
-                <Box color={accentColor} fontSize="lg">✓</Box>
-                <Text fontSize="sm" color={theme.colors.textSecondary}>
-                  {getMultiLanguageValue(benefit, language)}
-                </Text>
-              </HStack>
-            ))}
-          </VStack>
-        )}
-
-        {/* Urgency */}
-        {urgency && (
-          <Badge
-            colorScheme="red"
-            variant="solid"
-            px={3}
-            py={1}
-            borderRadius={theme.borderRadius.md}
-            fontSize="sm"
-          >
-            {getMultiLanguageValue(urgency.message, language)}
-          </Badge>
-        )}
-      </VStack>
+      <ActionRenderer
+        actionsContent={actionsContent}
+        block={block}
+        theme={theme}
+        language={language}
+        onPurchase={onPurchase}
+        onAddToCart={onAddToCart}
+        purchaseButton={purchaseButton}
+        customPurchaseButton={customPurchaseButton}
+        align={isMobile ? 'center' : 'left'}
+        direction="column"
+        spacing={4}
+      />
     )
   }
 
