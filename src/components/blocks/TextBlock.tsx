@@ -12,6 +12,7 @@ import {
 import { Block, PageBuilderTheme, TextContent, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
 import { ActionRenderer } from '../shared/ActionRenderer'
+import { HTMLContent } from '../ui/HTMLContent'
 
 interface TextBlockProps {
   block: Block

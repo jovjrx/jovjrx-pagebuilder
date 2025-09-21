@@ -398,8 +398,8 @@ export function BlocksEditor({
       </HStack>
 
       {/* Block Type Selection Modal */}
-      <Modal isOpen={isBlockTypeModalOpen} onClose={onBlockTypeModalClose}>
-        <ModalOverlay />
+      <Modal isOpen={isBlockTypeModalOpen} onClose={onBlockTypeModalClose} isCentered>
+        <ModalOverlay bg="blackAlpha.600" />
         <ModalContent bg="gray.800" color="white">
           <ModalHeader>Escolher Tipo de Bloco</ModalHeader>
           <ModalCloseButton />

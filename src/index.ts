@@ -33,6 +33,8 @@ export {
 export { ThemeProvider } from './components/ui/ThemeProvider'
 export { LanguageProvider } from './components/ui/LanguageProvider'
 export { PurchaseButton } from './components/ui/PurchaseButton'
+export { HTMLEditor } from './components/ui/HTMLEditor'
+export { HTMLContent, useIsHTML } from './components/ui/HTMLContent'
 
 // Hooks
 export { useLanguage, useLanguagePersistence, useLanguageDetection } from './hooks/useLanguage'

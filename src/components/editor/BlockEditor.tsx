@@ -28,6 +28,7 @@ import {
 import { AddIcon, DeleteIcon, ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import { Block, Content, TextContent, MediaContentBlock, ListContent, ActionsContent, TimerContent } from '../../types'
 import { getTranslation, getMultiLanguageValue, updateMultiLanguageContent } from '../../i18n'
+import { HTMLEditor } from '../ui/HTMLEditor'
 
 interface BlockEditorProps {
   block: Block
@@ -206,14 +207,14 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
             <FormControl>
               <FormLabel fontSize="sm">Texto</FormLabel>
-              <Textarea
+              <HTMLEditor
                 value={getMultiLanguageValue(textContent.value, language)}
-                onChange={(e) => updateContent(index, {
+                onChange={(value) => updateContent(index, {
                   ...textContent,
-                  value: updateMultiLanguageContent(textContent.value, e.target.value, language)
+                  value: updateMultiLanguageContent(textContent.value, value, language)
                 })}
-                size="sm"
-                rows={3}
+                minHeight="80px"
+                placeholder="Digite o texto aqui..."
               />
             </FormControl>
           </VStack>
@@ -284,16 +285,17 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             
             <FormControl>
               <FormLabel fontSize="sm">Texto do Botão</FormLabel>
-              <Input
+              <HTMLEditor
                 value={getMultiLanguageValue(actionsContent.primary.text, language)}
-                onChange={(e) => updateContent(index, {
+                onChange={(value) => updateContent(index, {
                   ...actionsContent,
                   primary: {
                     ...actionsContent.primary,
-                    text: updateMultiLanguageContent(actionsContent.primary.text, e.target.value, language)
+                    text: updateMultiLanguageContent(actionsContent.primary.text, value, language)
                   }
                 })}
-                size="sm"
+                minHeight="50px"
+                placeholder="Digite o texto do botão..."
               />
             </FormControl>
 
@@ -485,26 +487,31 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             <Box>
               <FormControl mb={3}>
                 <FormLabel>Título do Bloco</FormLabel>
-                <Input
+                <HTMLEditor
                   value={getMultiLanguageValue(block.title, language)}
-                  onChange={(e) => updateMultiLanguageField('title', e.target.value)}
+                  onChange={(value) => updateMultiLanguageField('title', value)}
+                  minHeight="60px"
+                  placeholder="Digite o título do bloco..."
                 />
               </FormControl>
 
               <FormControl mb={3}>
                 <FormLabel>Subtítulo</FormLabel>
-                <Input
+                <HTMLEditor
                   value={getMultiLanguageValue(block.subtitle || {}, language)}
-                  onChange={(e) => updateMultiLanguageField('subtitle', e.target.value)}
+                  onChange={(value) => updateMultiLanguageField('subtitle', value)}
+                  minHeight="50px"
+                  placeholder="Digite o subtítulo..."
                 />
               </FormControl>
 
               <FormControl mb={3}>
                 <FormLabel>Descrição</FormLabel>
-                <Textarea
+                <HTMLEditor
                   value={getMultiLanguageValue(block.description || {}, language)}
-                  onChange={(e) => updateMultiLanguageField('description', e.target.value)}
-                  rows={3}
+                  onChange={(value) => updateMultiLanguageField('description', value)}
+                  minHeight="80px"
+                  placeholder="Digite a descrição do bloco..."
                 />
               </FormControl>
 
