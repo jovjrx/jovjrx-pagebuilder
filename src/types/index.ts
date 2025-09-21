@@ -253,6 +253,7 @@ export interface BlocksRendererConfig {
   onError?: (error: Error) => void
   onPurchase?: (productId: string, productData: any) => void | Promise<void>
   onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  customPurchaseButton?: React.ComponentType<PurchaseButtonConfig>
 }
 
 export interface PurchaseButtonConfig {

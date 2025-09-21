@@ -21,9 +21,10 @@ interface ActionsBlockProps {
   language: string
   onPurchase?: (productId: string, productData: any) => void | Promise<void>
   onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  customPurchaseButton?: React.ComponentType<any>
 }
 
-export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart }: ActionsBlockProps) {
+export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart, customPurchaseButton }: ActionsBlockProps) {
   const actionsContent = block.content.find(c => c.type === 'actions') as ActionsContent | undefined
   
   if (!actionsContent) return null
@@ -61,16 +62,21 @@ export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart }
           <VStack spacing={4} align="center">
             {/* Primary Action */}
             {primary.action === 'buy' && primary.price && onPurchase ? (
-              <PurchaseButton
-                productId={block.id || 'unknown'}
-                productName={getMultiLanguageValue(block.title, language)}
-                price={primary.price}
-                text={getMultiLanguageValue(primary.text, language)}
-                colorScheme="purple"
-                size="lg"
-                onPurchase={onPurchase}
-                onAddToCart={onAddToCart}
-              />
+              (() => {
+                const CustomButton = customPurchaseButton || PurchaseButton
+                return (
+                  <CustomButton
+                    productId={block.id || 'unknown'}
+                    productName={getMultiLanguageValue(block.title, language)}
+                    price={primary.price}
+                    text={getMultiLanguageValue(primary.text, language)}
+                    colorScheme="purple"
+                    size="lg"
+                    onPurchase={onPurchase}
+                    onAddToCart={onAddToCart}
+                  />
+                )
+              })()
             ) : (
               <Button
                 size="lg"

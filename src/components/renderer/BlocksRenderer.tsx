@@ -29,6 +29,7 @@ export function BlocksRenderer({
   onError,
   onPurchase,
   onAddToCart,
+  customPurchaseButton,
 }: BlocksRendererConfig) {
   // State
   const [blocks, setBlocks] = useState<Block[]>([])
@@ -200,6 +201,7 @@ export function BlocksRenderer({
               language={language}
               onPurchase={onPurchase}
               onAddToCart={onAddToCart}
+              customPurchaseButton={customPurchaseButton}
             />
           </Box>
         </Box>
