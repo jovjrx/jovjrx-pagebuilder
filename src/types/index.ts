@@ -159,7 +159,7 @@ export interface BlockTheme {
 
 export interface Block {
   id?: string
-  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'text' | 'media' | 'list' | 'actions' | 'timer'
+  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'cta' | 'content' | 'timer'
   kind: 'section' | 'component'
   title: MultiLanguageContent
   subtitle?: MultiLanguageContent

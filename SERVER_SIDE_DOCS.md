@@ -11,7 +11,7 @@ Esta documentação especifica as **interfaces obrigatórias** que seu projeto d
 ```typescript
 interface Block {
   id?: string
-  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'text' | 'media' | 'list' | 'actions' | 'timer'
+  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'cta' | 'content' | 'timer'
   kind: 'section' | 'component'
   title: MultiLanguageContent
   subtitle?: MultiLanguageContent
@@ -27,6 +27,26 @@ interface Block {
   updated_at?: any
 }
 ```
+
+#### 📌 **Importante: Entendendo a Arquitetura**
+
+**BLOCK** = Tipo de **estrutura/layout** que será renderizada:
+- `hero` - Seção principal/banner
+- `features` - Layout para mostrar recursos
+- `testimonials` - Layout para depoimentos  
+- `pricing` - Layout para preços
+- `faq` - Layout para perguntas frequentes
+- `stats` - Layout para estatísticas
+- `cta` - Layout otimizado para Call-to-Action/conversão
+- `content` - Layout genérico para conteúdo flexível
+- `timer` - Layout para contador/timer
+
+**CONTENT** = O que vai **dentro** de cada bloco:
+- `TextContent` - Textos, parágrafos, títulos
+- `MediaContentBlock` - Imagens, vídeos
+- `ListContent` - Listas de itens
+- `ActionsContent` - Botões, CTAs
+- `TimerContent` - Configurações de timer
 
 ### 2. **Content Types** - Conteúdo dos Blocos
 

@@ -5,6 +5,9 @@ import { Box } from '@chakra-ui/react'
 import { Block, PageBuilderTheme } from '../../types'
 import { HeroBlock } from '../blocks/HeroBlock'
 import { FeaturesBlock } from '../blocks/FeaturesBlock'
+import { CTABlock } from '../blocks/CTABlock'
+import { ContentBlock } from '../blocks/ContentBlock'
+// Legacy blocks (deprecated - use ContentBlock instead)
 import { TextBlock } from '../blocks/TextBlock'
 import { MediaBlock } from '../blocks/MediaBlock'
 import { ActionsBlock } from '../blocks/ActionsBlock'
@@ -13,7 +16,6 @@ import { ActionsBlock } from '../blocks/ActionsBlock'
 // import { PricingBlock } from '../blocks/PricingBlock'
 // import { FAQBlock } from '../blocks/FAQBlock'
 // import { StatsBlock } from '../blocks/StatsBlock'
-// import { ListBlock } from '../blocks/ListBlock'
 // import { TimerBlock } from '../blocks/TimerBlock'
 
 interface BlockRendererProps {
@@ -77,11 +79,16 @@ export function BlockRenderer({
       case 'features':
         return <FeaturesBlock {...commonProps} />
       
+      case 'cta':
+        return <CTABlock {...commonProps} />
+      
+      case 'content':
+        return <ContentBlock {...commonProps} />
+      
       case 'testimonials':
       case 'pricing':
       case 'faq':
       case 'stats':
-      case 'list':
       case 'timer':
         // TODO: Implement missing block components
         return (
@@ -99,15 +106,6 @@ export function BlockRenderer({
             </Box>
           </Box>
         )
-      
-      case 'text':
-        return <TextBlock {...commonProps} />
-      
-      case 'media':
-        return <MediaBlock {...commonProps} />
-      
-      case 'actions':
-        return <ActionsBlock {...commonProps} />
       
       default:
         // Fallback for unknown block types

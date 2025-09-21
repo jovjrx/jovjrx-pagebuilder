@@ -416,15 +416,6 @@ export function BlocksEditor({
               </Button>
               <Button
                 w="full"
-                leftIcon={<Text fontSize="lg">📝</Text>}
-                onClick={() => { handleAddBlock('text'); onBlockTypeModalClose() }}
-                colorScheme="blue"
-                justifyContent="flex-start"
-              >
-                Texto - Conteúdo textual
-              </Button>
-              <Button
-                w="full"
                 leftIcon={<Text fontSize="lg">⭐</Text>}
                 onClick={() => { handleAddBlock('features'); onBlockTypeModalClose() }}
                 colorScheme="green"
@@ -434,21 +425,30 @@ export function BlocksEditor({
               </Button>
               <Button
                 w="full"
-                leftIcon={<Text fontSize="lg">🎬</Text>}
-                onClick={() => { handleAddBlock('media'); onBlockTypeModalClose() }}
-                colorScheme="orange"
+                leftIcon={<Text fontSize="lg">🎯</Text>}
+                onClick={() => { handleAddBlock('cta'); onBlockTypeModalClose() }}
+                colorScheme="yellow"
                 justifyContent="flex-start"
               >
-                Mídia - Imagem/vídeo
+                CTA - Call to Action
               </Button>
               <Button
                 w="full"
-                leftIcon={<Text fontSize="lg">🛒</Text>}
-                onClick={() => { handleAddBlock('actions'); onBlockTypeModalClose() }}
+                leftIcon={<Text fontSize="lg">📝</Text>}
+                onClick={() => { handleAddBlock('content'); onBlockTypeModalClose() }}
+                colorScheme="blue"
+                justifyContent="flex-start"
+              >
+                Conteúdo - Bloco genérico flexível
+              </Button>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">⏰</Text>}
+                onClick={() => { handleAddBlock('timer'); onBlockTypeModalClose() }}
                 colorScheme="red"
                 justifyContent="flex-start"
               >
-                Actions - Botões/CTAs/Compra
+                Timer - Contador regressivo
               </Button>
             </VStack>
           </ModalBody>

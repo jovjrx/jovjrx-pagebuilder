@@ -1,6 +1,6 @@
 {
   "name": "jovjrx-pagebuilder",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Universal Page Builder for Next.js with Firebase - React 19 Compatible with SSR/SSG Support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

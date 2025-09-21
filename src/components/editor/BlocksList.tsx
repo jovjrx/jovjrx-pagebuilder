@@ -48,10 +48,8 @@ export function BlocksList({
       pricing: '💰',
       faq: '❓',
       stats: '📊',
-      text: '📝',
-      media: '🎬',
-      list: '📋',
-      actions: '🎯',
+      cta: '�',
+      content: '📝',
       timer: '⏰',
     }
     return icons[blockType] || '📄'
@@ -65,10 +63,8 @@ export function BlocksList({
       pricing: 'orange',
       faq: 'cyan',
       stats: 'pink',
-      text: 'gray',
-      media: 'red',
-      list: 'teal',
-      actions: 'yellow',
+      cta: 'yellow',
+      content: 'gray',
       timer: 'purple',
     }
     return colors[blockType] || 'gray'

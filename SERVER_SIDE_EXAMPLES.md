@@ -1,5 +1,41 @@
 # jovjrx-pagebuilder - Exemplos Práticos Server-Side
 
+## 🔥 **Nova Arquitetura (v1.4.2+)**
+
+### Tipos de Bloco Atualizados
+- `hero` - Seção principal
+- `features` - Recursos/características  
+- `cta` - Call-to-Action otimizado
+- `content` - Conteúdo genérico flexível
+- `testimonials`, `pricing`, `faq`, `stats`, `timer` - Layouts específicos
+
+### Exemplo Rápido da Nova Estrutura
+
+```typescript
+const exemploBloco: Block = {
+  id: 'bloco-1',
+  type: 'cta', // Tipo do layout/estrutura
+  title: { 'pt-BR': 'Compre Agora!' },
+  content: [ // Conteúdo dentro do bloco
+    {
+      type: 'text',
+      variant: 'paragraph', 
+      value: { 'pt-BR': 'Oferta especial...' },
+      order: 0
+    },
+    {
+      type: 'actions',
+      primary: { 
+        text: { 'pt-BR': 'Comprar' }, 
+        action: 'buy', 
+        style: 'primary' 
+      },
+      order: 1
+    }
+  ]
+}
+```
+
 ## 🌟 Exemplos Reais de Implementação
 
 ### 1. **E-commerce Landing Page Completa**

@@ -4,6 +4,8 @@ export { FeaturesBlock } from './FeaturesBlock'
 export { TextBlock } from './TextBlock'
 export { MediaBlock } from './MediaBlock'
 export { ActionsBlock } from './ActionsBlock'
+export { CTABlock } from './CTABlock'
+export { ContentBlock } from './ContentBlock'
 
 // TODO: Implement missing blocks
 // export { TestimonialsBlock } from './TestimonialsBlock'
