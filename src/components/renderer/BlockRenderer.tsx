@@ -76,36 +76,17 @@ export function BlockRenderer({
       case 'hero':
         return <HeroBlock {...commonProps} />
       
-      case 'features':
-        return <FeaturesBlock {...commonProps} />
-      
       case 'cta':
         return <CTABlock {...commonProps} />
       
       case 'content':
         return <ContentBlock {...commonProps} />
       
-      case 'testimonials':
-      case 'pricing':
-      case 'faq':
-      case 'stats':
-      case 'timer':
-        // TODO: Implement missing block components
-        return (
-          <Box
-            bg={blockTheme.colors.surface}
-            color={blockTheme.colors.text}
-            p={6}
-            borderRadius="md"
-            border="2px dashed"
-            borderColor={blockTheme.colors.border}
-            textAlign="center"
-          >
-            <Box>
-              Block type "{block.type}" is not implemented yet.
-            </Box>
-          </Box>
-        )
+      case 'custom':
+        // Reuse ContentBlock without automatic header
+        return <ContentBlock {...commonProps} hideHeader />
+      
+      
       
       default:
         // Fallback for unknown block types

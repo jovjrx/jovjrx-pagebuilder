@@ -114,7 +114,7 @@ export default function PublicPage({ params }: { params: { pageId: string } }) {
 | **💬 Testimonials** | Customer reviews and social proof | 🚧 Coming Soon |
 | **💰 Pricing** | Plan comparisons and pricing tables | 🚧 Coming Soon |
 | **❓ FAQ** | Accordion-style frequently asked questions | 🚧 Coming Soon |
-| **📊 Stats** | Animated counters and achievement metrics | � Coming Soon |
+| **📊 Stats** | Animated counters and achievement metrics | 🚧 Coming Soon |
 | **📋 List** | Flexible lists for any type of content | 🚧 Coming Soon |
 | **⏰ Timer** | Countdown timers for urgency and offers | 🚧 Coming Soon |
 
@@ -194,6 +194,13 @@ service cloud.firestore {
 - **Performance** - Tree-shakeable, optimized bundles
 - **Accessibility** - WCAG compliant components
 
+## Changelog
+
+- 1.6.3
+  - Fix: Actions now render both primary and secondary consistently inside Content blocks using ActionRenderer
+  - Fix: Editor Conteúdo tab now supports adding and editing List and Timer content types
+  - Enhancement: Actions editor includes secondary action, benefits list, and urgency controls
+
 ## � Use Cases
 
 **Perfect for:**
@@ -237,7 +244,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - 🔥 **BREAKING**: Refactored Block.type architecture for better clarity
 - ✨ **NEW**: CTABlock component for optimized call-to-action layouts
 - ✨ **NEW**: ContentBlock generic component for flexible content combinations
-- 🏗️ **Block types now represent structure**: `hero`, `features`, `cta`, `content`, `timer`
+- 🏗️ **Block types now represent structure**: `hero`, `features`, `cta`, `content`
 - 📝 **Content types represent data**: `text`, `media`, `list`, `actions`, `timer`
 - 📚 **Updated documentation** with new architecture examples
 - 🎯 **Improved UX** in block type selection modal

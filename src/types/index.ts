@@ -102,7 +102,69 @@ export interface ActionsContent {
   order: number
 }
 
+/**
+ * Additional content types for flexible composition inside Content blocks
+ */
+export interface FeaturesContent {
+  type: 'features'
+  items: Array<{
+    icon?: string
+    title: MultiLanguageContent
+    text?: MultiLanguageContent
+    media?: MediaContent
+    badge?: MultiLanguageContent
+    link?: { text: MultiLanguageContent; url: string }
+  }>
+  order: number
+}
+
+export interface StatisticsContent {
+  type: 'statistics'
+  items: Array<{
+    label: MultiLanguageContent
+    value: string
+    unit?: string
+    trend?: 'up' | 'down' | 'neutral'
+    color?: string
+  }>
+  order: number
+}
+
+export interface DetailsContent {
+  type: 'details'
+  accordion?: boolean
+  items: Array<{
+    term: MultiLanguageContent
+    description: MultiLanguageContent
+    icon?: string
+    media?: MediaContent
+  }>
+  order: number
+}
+
+export interface TestimonialsContent {
+  type: 'testimonials'
+  items: Array<{
+    quote: MultiLanguageContent
+    authorName: string
+    authorRole?: string
+    avatarUrl?: string
+    rating?: number
+  }>
+  order: number
+}
+
+export interface HTMLContentItem {
+  type: 'html'
+  value: MultiLanguageContent | string
+  order: number
+}
+
+/**
+ * Deprecated: prefer actions.urgency for offer urgency
+ */
 export interface TimerContent {
+  /** @deprecated Use actions.urgency or a dedicated countdown widget inside html content */
   type: 'timer'
   endDate: string
   title: MultiLanguageContent
@@ -111,7 +173,17 @@ export interface TimerContent {
   order: number
 }
 
-export type Content = TextContent | MediaContentBlock | ListContent | ActionsContent | TimerContent
+export type Content =
+  | TextContent
+  | MediaContentBlock
+  | ActionsContent
+  | ListContent
+  | FeaturesContent
+  | StatisticsContent
+  | DetailsContent
+  | TestimonialsContent
+  | HTMLContentItem
+  | TimerContent // deprecated, kept temporarily for compatibility
 
 export interface ListItem {
   id?: string
@@ -165,7 +237,7 @@ export interface BlockTheme {
 
 export interface Block {
   id?: string
-  type: 'hero' | 'features' | 'testimonials' | 'pricing' | 'faq' | 'stats' | 'cta' | 'content' | 'timer'
+  type: 'hero' | 'cta' | 'content' | 'custom'
   kind: 'section' | 'component'
   title: MultiLanguageContent
   subtitle?: MultiLanguageContent

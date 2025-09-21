@@ -44,13 +44,9 @@ export function BlocksList({
     const icons = {
       hero: '🚀',
       features: '✨',
-      testimonials: '💬',
-      pricing: '💰',
-      faq: '❓',
-      stats: '📊',
-      cta: '�',
+      cta: '🎯',
       content: '📝',
-      timer: '⏰',
+      custom: '🧩',
     }
     return icons[blockType] || '📄'
   }
@@ -59,13 +55,9 @@ export function BlocksList({
     const colors = {
       hero: 'purple',
       features: 'blue',
-      testimonials: 'green',
-      pricing: 'orange',
-      faq: 'cyan',
-      stats: 'pink',
       cta: 'yellow',
       content: 'gray',
-      timer: 'purple',
+      custom: 'teal',
     }
     return colors[blockType] || 'gray'
   }

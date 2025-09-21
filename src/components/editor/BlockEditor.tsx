@@ -416,6 +416,413 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
               <option value="ghost">Fantasma</option>
             </Select>
           </FormControl>
+
+          <Divider borderColor="gray.600" />
+
+          {/* Secondary Action */}
+          <VStack spacing={2} align="stretch">
+            <HStack justify="space-between">
+              <Text fontSize="sm" fontWeight="semibold">Ação Secundária</Text>
+              <HStack>
+                <Text fontSize="xs" color="gray.400">Desabilitada</Text>
+                <Switch
+                  size="sm"
+                  isChecked={!!actionsContent.secondary}
+                  onChange={(e) => {
+                    const enabled = e.target.checked
+                    if (enabled) {
+                      const newSecondary = {
+                        text: { [language]: 'Saiba mais' },
+                        url: '',
+                        action: 'link' as const,
+                        style: 'outline' as const,
+                      }
+                      updateContent(index, { ...actionsContent, secondary: newSecondary })
+                    } else {
+                      const { secondary, ...rest } = actionsContent
+                      updateContent(index, { ...(rest as ActionsContent) })
+                    }
+                  }}
+                />
+                <Text fontSize="xs" color="gray.400">Habilitada</Text>
+              </HStack>
+            </HStack>
+
+            {actionsContent.secondary && (
+              <VStack spacing={3} align="stretch" p={3} borderWidth="1px" borderColor="gray.600" borderRadius="md">
+                <FormControl>
+                  <FormLabel fontSize="sm">Texto do Botão (sec.)</FormLabel>
+                  <HTMLEditor
+                    value={getMultiLanguageValue(actionsContent.secondary.text, language)}
+                    onChange={(value) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, text: updateMultiLanguageContent(actionsContent.secondary!.text, value, language) } })}
+                    minHeight="50px"
+                    placeholder="Texto do botão secundário..."
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">URL (sec.)</FormLabel>
+                  <Input
+                    value={actionsContent.secondary.url}
+                    onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, url: e.target.value } })}
+                    size="sm"
+                    placeholder="https://..."
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Tipo de Ação (sec.)</FormLabel>
+                  <Select
+                    value={actionsContent.secondary.action}
+                    onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, action: e.target.value as any } })}
+                    size="sm"
+                  >
+                    <option value="link">🔗 Link/Navegação</option>
+                    <option value="buy">🛒 Comprar/E-commerce</option>
+                    <option value="download">📥 Download</option>
+                    <option value="contact">📞 Contato</option>
+                    <option value="more_info">ℹ️ Mais Informações</option>
+                  </Select>
+                </FormControl>
+
+                {actionsContent.secondary.action === 'buy' && (
+                  <VStack spacing={3} align="stretch" p={3} borderWidth="1px" borderColor="purple.300" borderRadius="md">
+                    <Text fontSize="sm" fontWeight="bold">⚙️ Compra (sec.)</Text>
+                    <FormControl>
+                      <FormLabel fontSize="xs">Preço (R$)</FormLabel>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={actionsContent.secondary.price?.amount || ''}
+                        onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, price: { amount: parseFloat(e.target.value) || 0, currency: actionsContent.secondary?.price?.currency || 'BRL', original: actionsContent.secondary?.price?.original } } })}
+                        size="sm"
+                        placeholder="97.00"
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel fontSize="xs">Preço Original (opcional)</FormLabel>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        value={actionsContent.secondary.price?.original || ''}
+                        onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, price: { amount: actionsContent.secondary?.price?.amount || 0, currency: actionsContent.secondary?.price?.currency || 'BRL', original: e.target.value ? parseFloat(e.target.value) : undefined } } })}
+                        size="sm"
+                        placeholder="147.00"
+                      />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel fontSize="xs">Moeda</FormLabel>
+                      <Select
+                        value={actionsContent.secondary.price?.currency || 'BRL'}
+                        onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, price: { amount: actionsContent.secondary?.price?.amount || 0, currency: e.target.value, original: actionsContent.secondary?.price?.original } } })}
+                        size="sm"
+                      >
+                        <option value="BRL">🇧🇷 Real (BRL)</option>
+                        <option value="USD">🇺🇸 Dólar (USD)</option>
+                        <option value="EUR">🇪🇺 Euro (EUR)</option>
+                      </Select>
+                    </FormControl>
+                  </VStack>
+                )}
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Estilo (sec.)</FormLabel>
+                  <Select
+                    value={actionsContent.secondary.style}
+                    onChange={(e) => updateContent(index, { ...actionsContent, secondary: { ...actionsContent.secondary!, style: e.target.value as any } })}
+                    size="sm"
+                  >
+                    <option value="primary">Primário</option>
+                    <option value="secondary">Secundário</option>
+                    <option value="outline">Contorno</option>
+                    <option value="ghost">Fantasma</option>
+                  </Select>
+                </FormControl>
+              </VStack>
+            )}
+          </VStack>
+
+          <Divider borderColor="gray.600" />
+
+          {/* Benefits */}
+          <VStack align="stretch" spacing={2}>
+            <HStack justify="space-between">
+              <Text fontSize="sm" fontWeight="semibold">Benefícios</Text>
+              <Button size="xs" leftIcon={<AddIcon />} onClick={() => updateContent(index, { ...actionsContent, benefits: [ ...(actionsContent.benefits || []), { [language]: '✔️ Benefício' } ] })}>Adicionar</Button>
+            </HStack>
+            {(actionsContent.benefits || []).map((b, i) => (
+              <HStack key={i} align="start">
+                <HTMLEditor
+                  value={getMultiLanguageValue(b, language)}
+                  onChange={(value) => {
+                    const arr = [...(actionsContent.benefits || [])]
+                    arr[i] = updateMultiLanguageContent(arr[i] || {}, value, language)
+                    updateContent(index, { ...actionsContent, benefits: arr })
+                  }}
+                  minHeight="40px"
+                  placeholder={`Benefício #${i + 1}`}
+                />
+                <IconButton aria-label="Remover benefício" size="xs" variant="ghost" colorScheme="red" onClick={() => {
+                  const arr = [...(actionsContent.benefits || [])]
+                  arr.splice(i, 1)
+                  updateContent(index, { ...actionsContent, benefits: arr })
+                }}>
+                  <DeleteIcon />
+                </IconButton>
+              </HStack>
+            ))}
+          </VStack>
+
+          <Divider borderColor="gray.600" />
+
+          {/* Urgency */}
+          <VStack align="stretch" spacing={3}>
+            <HStack justify="space-between">
+              <Text fontSize="sm" fontWeight="semibold">Urgência</Text>
+              <HStack>
+                <Text fontSize="xs" color="gray.400">Desabilitada</Text>
+                <Switch
+                  size="sm"
+                  isChecked={!!actionsContent.urgency}
+                  onChange={(e) => {
+                    const enabled = e.target.checked
+                    if (enabled) {
+                      updateContent(index, { ...actionsContent, urgency: { type: 'limited_time', message: { [language]: 'Termina em breve!' }, endDate: new Date(Date.now() + 86400000).toISOString() } })
+                    } else {
+                      const { urgency, ...rest } = actionsContent
+                      updateContent(index, { ...(rest as ActionsContent) })
+                    }
+                  }}
+                />
+                <Text fontSize="xs" color="gray.400">Habilitada</Text>
+              </HStack>
+            </HStack>
+
+            {actionsContent.urgency && (
+              <VStack spacing={3} align="stretch" p={3} borderWidth="1px" borderColor="gray.600" borderRadius="md">
+                <FormControl>
+                  <FormLabel fontSize="sm">Tipo</FormLabel>
+                  <Select
+                    value={actionsContent.urgency.type}
+                    onChange={(e) => updateContent(index, { ...actionsContent, urgency: { ...actionsContent.urgency!, type: e.target.value as any } })}
+                    size="sm"
+                  >
+                    <option value="limited_time">⏳ Tempo limitado</option>
+                    <option value="limited_quantity">📦 Quantidade limitada</option>
+                    <option value="flash_sale">⚡ Promo relâmpago</option>
+                  </Select>
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="sm">Mensagem</FormLabel>
+                  <HTMLEditor
+                    value={getMultiLanguageValue(actionsContent.urgency.message, language)}
+                    onChange={(value) => updateContent(index, { ...actionsContent, urgency: { ...actionsContent.urgency!, message: updateMultiLanguageContent(actionsContent.urgency!.message, value, language) } })}
+                    minHeight="50px"
+                    placeholder="Mensagem de urgência..."
+                  />
+                </FormControl>
+
+                {actionsContent.urgency.type !== 'limited_quantity' && (
+                  <FormControl>
+                    <FormLabel fontSize="sm">Data/Hora de término</FormLabel>
+                    <Input
+                      type="datetime-local"
+                      value={(() => { try { const d = new Date(actionsContent.urgency!.endDate || new Date().toISOString()); return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16) } catch { return '' } })()}
+                      onChange={(e) => {
+                        const local = e.target.value
+                        const date = new Date(local)
+                        updateContent(index, { ...actionsContent, urgency: { ...actionsContent.urgency!, endDate: date.toISOString() } })
+                      }}
+                      size="sm"
+                    />
+                  </FormControl>
+                )}
+
+                {actionsContent.urgency.type === 'limited_quantity' && (
+                  <FormControl>
+                    <FormLabel fontSize="sm">Quantidade</FormLabel>
+                    <Input
+                      type="number"
+                      value={actionsContent.urgency.quantity || 0}
+                      onChange={(e) => updateContent(index, { ...actionsContent, urgency: { ...actionsContent.urgency!, quantity: parseInt(e.target.value) || 0 } })}
+                      size="sm"
+                      min={0}
+                    />
+                  </FormControl>
+                )}
+              </VStack>
+            )}
+          </VStack>
+        </VStack>
+      )
+    }
+
+    if (content.type === 'list') {
+      const listContent = content as ListContent
+      const updateItem = (i: number, updater: (prev: any) => any) => {
+        const items = [...listContent.items]
+        items[i] = updater(items[i] || {})
+        updateContent(index, { ...listContent, items })
+      }
+      const moveItem = (i: number, dir: 'up' | 'down') => {
+        const ni = dir === 'up' ? i - 1 : i + 1
+        if (ni < 0 || ni >= listContent.items.length) return
+        const items = [...listContent.items]
+        const [m] = items.splice(i, 1)
+        items.splice(ni, 0, m)
+        updateContent(index, { ...listContent, items })
+      }
+      const removeItem = (i: number) => {
+        const items = listContent.items.filter((_, idx) => idx !== i)
+        updateContent(index, { ...listContent, items })
+      }
+      return (
+        <VStack spacing={3} align="stretch">
+          <HStack justify="space-between">
+            <Badge colorScheme="green">Lista</Badge>
+            {commonActions}
+          </HStack>
+
+          <FormControl>
+            <FormLabel fontSize="sm">Papel</FormLabel>
+            <Select
+              value={listContent.role}
+              onChange={(e) => updateContent(index, { ...listContent, role: e.target.value as any })}
+              size="sm"
+            >
+              <option value="feature">Recurso/Feature</option>
+              <option value="testimonial">Depoimento</option>
+              <option value="faq">Perguntas (FAQ)</option>
+              <option value="plan">Plano/Preço</option>
+              <option value="benefit">Benefício</option>
+            </Select>
+          </FormControl>
+
+          <HStack justify="space-between" mt={2}>
+            <Text fontSize="sm" fontWeight="semibold">Itens</Text>
+            <Button
+              size="xs"
+              leftIcon={<AddIcon />}
+              onClick={() => updateContent(index, { ...listContent, items: [...listContent.items, { role: listContent.role, title: { [language]: 'Novo item' } }] })}
+            >
+              Adicionar item
+            </Button>
+          </HStack>
+
+          {listContent.items.length === 0 ? (
+            <Box p={4} bg="gray.800" borderRadius="md" textAlign="center" color="gray.400">Nenhum item</Box>
+          ) : (
+            <VStack align="stretch" spacing={3}>
+              {listContent.items.map((item, i) => (
+                <Box key={i} p={3} borderWidth="1px" borderColor="gray.600" borderRadius="md">
+                  <HStack justify="space-between" mb={2}>
+                    <Badge colorScheme="gray">Item #{i + 1}</Badge>
+                    <HStack>
+                      <IconButton aria-label="Mover item para cima" size="xs" variant="ghost" isDisabled={i===0} onClick={() => moveItem(i, 'up')}><ChevronUpIcon /></IconButton>
+                      <IconButton aria-label="Mover item para baixo" size="xs" variant="ghost" isDisabled={i===listContent.items.length-1} onClick={() => moveItem(i, 'down')}><ChevronDownIcon /></IconButton>
+                      <IconButton aria-label="Remover item" size="xs" variant="ghost" colorScheme="red" onClick={() => removeItem(i)}><DeleteIcon /></IconButton>
+                    </HStack>
+                  </HStack>
+
+                  <FormControl mb={2}>
+                    <FormLabel fontSize="sm">Título</FormLabel>
+                    <HTMLEditor
+                      value={getMultiLanguageValue(item.title || {}, language)}
+                      onChange={(value) => updateItem(i, (prev) => ({ ...prev, title: updateMultiLanguageContent(prev.title || {}, value, language) }))}
+                      minHeight="40px"
+                      placeholder="Título do item"
+                    />
+                  </FormControl>
+                  <FormControl mb={2}>
+                    <FormLabel fontSize="sm">Subtítulo</FormLabel>
+                    <HTMLEditor
+                      value={getMultiLanguageValue(item.subtitle || {}, language)}
+                      onChange={(value) => updateItem(i, (prev) => ({ ...prev, subtitle: updateMultiLanguageContent(prev.subtitle || {}, value, language) }))}
+                      minHeight="40px"
+                      placeholder="Subtítulo (opcional)"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel fontSize="sm">Texto</FormLabel>
+                    <HTMLEditor
+                      value={getMultiLanguageValue(item.text || {}, language)}
+                      onChange={(value) => updateItem(i, (prev) => ({ ...prev, text: updateMultiLanguageContent(prev.text || {}, value, language) }))}
+                      minHeight="60px"
+                      placeholder="Texto do item (opcional)"
+                    />
+                  </FormControl>
+                </Box>
+              ))}
+            </VStack>
+          )}
+        </VStack>
+      )
+    }
+
+    if (content.type === 'timer') {
+      const timerContent = content as TimerContent
+      const toLocal = (iso?: string) => {
+        try {
+          const d = new Date(iso || new Date().toISOString())
+          return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,16)
+        } catch {
+          return ''
+        }
+      }
+      return (
+        <VStack spacing={3} align="stretch">
+          <HStack justify="space-between">
+            <Badge colorScheme="yellow">Timer</Badge>
+            {commonActions}
+          </HStack>
+
+          <FormControl>
+            <FormLabel fontSize="sm">Título</FormLabel>
+            <HTMLEditor
+              value={getMultiLanguageValue(timerContent.title, language)}
+              onChange={(value) => updateContent(index, { ...timerContent, title: updateMultiLanguageContent(timerContent.title, value, language) })}
+              minHeight="50px"
+              placeholder="Título do timer"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontSize="sm">Subtítulo (opcional)</FormLabel>
+            <HTMLEditor
+              value={getMultiLanguageValue(timerContent.subtitle || {}, language)}
+              onChange={(value) => updateContent(index, { ...timerContent, subtitle: updateMultiLanguageContent(timerContent.subtitle || {}, value, language) })}
+              minHeight="40px"
+              placeholder="Subtítulo do timer"
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontSize="sm">Estilo</FormLabel>
+            <Select
+              value={timerContent.style}
+              onChange={(e) => updateContent(index, { ...timerContent, style: e.target.value as any })}
+              size="sm"
+            >
+              <option value="countdown">Contagem regressiva</option>
+              <option value="progress">Barra de progresso</option>
+              <option value="circular">Circular</option>
+            </Select>
+          </FormControl>
+
+          <FormControl>
+            <FormLabel fontSize="sm">Data/Hora de término</FormLabel>
+            <Input
+              type="datetime-local"
+              value={toLocal(timerContent.endDate)}
+              onChange={(e) => {
+                const local = e.target.value
+                const date = new Date(local)
+                updateContent(index, { ...timerContent, endDate: date.toISOString() })
+              }}
+              size="sm"
+            />
+          </FormControl>
         </VStack>
       )
     }
@@ -423,7 +830,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
     // Default
     return (
       <Box p={3} borderWidth="1px" borderColor="gray.600" borderRadius="md">
-        <Text fontSize="sm" color="gray.400">Editor para {content.type} em desenvolvimento...</Text>
+        <Text fontSize="sm" color="gray.400">Editor em desenvolvimento...</Text>
       </Box>
     )
   }
@@ -644,7 +1051,9 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
                     <HStack spacing={2}>
                       <Button size="xs" leftIcon={<AddIcon />} onClick={() => addContent('text')} colorScheme="blue" variant="outline">Texto</Button>
                       <Button size="xs" leftIcon={<AddIcon />} onClick={() => addContent('media')} colorScheme="purple" variant="outline">Mídia</Button>
+                      <Button size="xs" leftIcon={<AddIcon />} onClick={() => addContent('list')} colorScheme="green" variant="outline">Lista</Button>
                       <Button size="xs" leftIcon={<AddIcon />} onClick={() => addContent('actions')} colorScheme="red" variant="outline">Ações</Button>
+                      <Button size="xs" leftIcon={<AddIcon />} onClick={() => addContent('timer')} colorScheme="yellow" variant="outline">Timer</Button>
                     </HStack>
                   </HStack>
 

@@ -468,11 +468,11 @@ export function BlocksEditor({
               <Button
                 w="full"
                 leftIcon={<Text fontSize="lg">⭐</Text>}
-                onClick={() => { handleAddBlock('features'); onBlockTypeModalClose() }}
+                onClick={() => { handleAddBlock('content'); onBlockTypeModalClose() }}
                 colorScheme="green"
                 justifyContent="flex-start"
               >
-                Features - Lista de recursos
+                Features - Lista de recursos (Conteúdo)
               </Button>
               <Button
                 w="full"
@@ -492,15 +492,7 @@ export function BlocksEditor({
               >
                 Conteúdo - Bloco genérico flexível
               </Button>
-              <Button
-                w="full"
-                leftIcon={<Text fontSize="lg">⏰</Text>}
-                onClick={() => { handleAddBlock('timer'); onBlockTypeModalClose() }}
-                colorScheme="red"
-                justifyContent="flex-start"
-              >
-                Timer - Contador regressivo
-              </Button>
+              {/* Timer is handled as a content element inside blocks, not as a standalone block type */}
             </VStack>
           </ModalBody>
         </ModalContent>

@@ -1,12 +1,13 @@
 'use client'
 
 import React from 'react'
-import { Box, VStack, Heading, Text, Container, Grid, SimpleGrid } from '@chakra-ui/react'
-import { Block, PageBuilderTheme, TextContent, MediaContentBlock, ListContent, ActionsContent, TimerContent } from '../../types'
+import { Box, VStack, Heading, Text, Container, Grid, SimpleGrid, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react'
+import { Block, PageBuilderTheme, TextContent, MediaContentBlock, ListContent, ActionsContent, TimerContent, FeaturesContent, StatisticsContent, DetailsContent, TestimonialsContent, HTMLContentItem } from '../../types'
 import { HTMLContent } from '../ui/HTMLContent'
 import { TextBlock } from './TextBlock'
 import { MediaBlock } from './MediaBlock'
 import { ActionsBlock } from './ActionsBlock'
+import { ActionRenderer } from '../shared/ActionRenderer'
 
 interface ContentBlockProps {
   block: Block
@@ -14,6 +15,7 @@ interface ContentBlockProps {
   language: string
   isFirst?: boolean
   isLast?: boolean
+  hideHeader?: boolean
   onPurchase?: (productId: string, productData: any) => void | Promise<void>
   onAddToCart?: (productId: string, productData: any) => void | Promise<void>
   purchaseButton?: any
@@ -26,6 +28,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
   language,
   isFirst,
   isLast,
+  hideHeader,
   onPurchase,
   onAddToCart,
   purchaseButton,
@@ -45,7 +48,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
   const sortedContent = [...block.content].sort((a, b) => a.order - b.order)
 
   // Render individual content item
-  const renderContentItem = (content: TextContent | MediaContentBlock | ListContent | ActionsContent | TimerContent) => {
+  const renderContentItem = (content: TextContent | MediaContentBlock | ListContent | ActionsContent | TimerContent | FeaturesContent | StatisticsContent | DetailsContent | TestimonialsContent | HTMLContentItem) => {
     const key = `${content.type}-${content.order}`
 
     switch (content.type) {
@@ -159,18 +162,118 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
           </Box>
         )
 
-      case 'actions':
-        // Create a temporary block structure for ActionsBlock
-        const actionsBlock: Block = {
-          ...block,
-          content: [content]
-        }
+      case 'features': {
+        const items = content.items || []
+        return (
+          <Box key={key} w="100%" mb={6}>
+            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
+              {items.map((it, i) => (
+                <Box key={i} p={5} borderWidth="1px" borderColor={block.theme?.border || theme.colors.border} borderRadius="md" bg={block.theme?.background || theme.colors.surface}>
+                  <Text fontSize="2xl" mb={2}>{it.icon || '✨'}</Text>
+                  <Heading size="sm" mb={1} color={block.theme?.text || theme.colors.text}>{getContent(it.title)}</Heading>
+                  {it.text && <Text color={theme.colors.textSecondary}>{getContent(it.text)}</Text>}
+                  {it.badge && (
+                    <Box mt={3} as="span" px={2} py={1} borderRadius="md" border="1px solid" borderColor={block.theme?.border || theme.colors.border} fontSize="xs">
+                      {getContent(it.badge)}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+        )
+      }
+
+      case 'statistics': {
+        const items = content.items || []
+        return (
+          <Box key={key} w="100%" mb={6}>
+            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={6}>
+              {items.map((it, i) => (
+                <Box key={i} p={4} textAlign="center" borderRadius="md" borderWidth="1px" borderColor={block.theme?.border || theme.colors.border}>
+                  <Text fontSize="3xl" fontWeight="bold" color={it.color || block.theme?.accent || theme.colors.accent}>{it.value}{it.unit ? ` ${it.unit}` : ''}</Text>
+                  <Text fontSize="sm" color={theme.colors.textSecondary}>{getContent(it.label)}</Text>
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+        )
+      }
+
+      case 'details': {
+        const items = content.items || []
+        const useAccordion = content.accordion
+        return (
+          <Box key={key} w="100%" mb={6}>
+            {useAccordion ? (
+              <Accordion allowMultiple>
+                {items.map((it, i) => (
+                  <AccordionItem key={i} border="1px solid" borderColor={block.theme?.border || theme.colors.border} borderRadius="md" mb={2}>
+                    <AccordionButton bg="gray.700" _hover={{ bg: 'gray.600' }}>
+                      <Box flex="1" textAlign="left">{getContent(it.term)}</Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4} bg="gray.750">
+                      <Text color={theme.colors.textSecondary}>{getContent(it.description)}</Text>
+                    </AccordionPanel>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            ) : (
+              <VStack spacing={4} align="stretch">
+                {items.map((it, i) => (
+                  <Box key={i}>
+                    <Heading size="sm" mb={1} color={block.theme?.text || theme.colors.text}>{getContent(it.term)}</Heading>
+                    <Text color={theme.colors.textSecondary}>{getContent(it.description)}</Text>
+                  </Box>
+                ))}
+              </VStack>
+            )}
+          </Box>
+        )
+      }
+
+      case 'testimonials': {
+        const items = content.items || []
+        return (
+          <Box key={key} w="100%" mb={6}>
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
+              {items.map((it, i) => (
+                <Box key={i} p={5} borderWidth="1px" borderColor={block.theme?.border || theme.colors.border} borderRadius="md" bg={block.theme?.background || theme.colors.surface}>
+                  <Text fontStyle="italic" mb={3}>“{getContent(it.quote)}”</Text>
+                  <Text fontWeight="bold">{it.authorName}</Text>
+                  {it.authorRole && <Text fontSize="sm" color={theme.colors.textSecondary}>{it.authorRole}</Text>}
+                </Box>
+              ))}
+            </SimpleGrid>
+          </Box>
+        )
+      }
+
+      case 'html': {
+        const value = typeof content.value === 'string' ? content.value : getContent(content.value)
         return (
           <Box key={key} w="100%" mb={4}>
-            <ActionsBlock 
-              block={actionsBlock}
+            <HTMLContent content={value} />
+          </Box>
+        )
+      }
+
+      case 'actions':
+        return (
+          <Box key={key} w="100%" mb={4}>
+            <ActionRenderer
+              actionsContent={content as ActionsContent}
+              block={block}
               theme={theme}
               language={language}
+              onPurchase={onPurchase}
+              onAddToCart={onAddToCart}
+              purchaseButton={purchaseButton}
+              customPurchaseButton={customPurchaseButton}
+              align="center"
+              direction="row"
+              spacing={4}
             />
           </Box>
         )
@@ -240,7 +343,7 @@ export const ContentBlock: React.FC<ContentBlockProps> = ({
       <ContentWrapper>
         <VStack spacing={6} align="stretch">
           {/* Block Header */}
-          {(title || subtitle || description) && (
+          {!hideHeader && (title || subtitle || description) && (
             <VStack spacing={4} textAlign="center" mb={8}>
               {title && (
                 <Heading 
