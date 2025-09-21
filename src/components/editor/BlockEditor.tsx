@@ -329,8 +329,8 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             </FormControl>
 
             {actionsContent.primary.action === 'buy' && (
-              <VStack spacing={3} align="stretch" p={3} bg="purple.900" borderRadius="md">
-                <Text fontSize="sm" fontWeight="bold" color="purple.200">⚙️ Configurações de Compra</Text>
+              <VStack spacing={3} align="stretch" p={3} borderWidth="1px" borderColor="purple.300" borderRadius="md">
+                <Text fontSize="sm" fontWeight="bold">⚙️ Configurações de Compra</Text>
                 
                 <FormControl>
                   <FormLabel fontSize="xs">Preço (R$)</FormLabel>
@@ -422,7 +422,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
       default:
         return (
-          <Box p={3} bg="gray.700" borderRadius="md">
+          <Box p={3} borderWidth="1px" borderColor="gray.600" borderRadius="md">
             <Text fontSize="sm" color="gray.400">
               Editor para {content.type} em desenvolvimento...
             </Text>
@@ -441,9 +441,18 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             <Heading size="md" color="purple.300">
               {getTranslation(`block.${block.type}`, language)}
             </Heading>
-            <Badge colorScheme={block.active ? 'green' : 'red'}>
-              {block.active ? 'Ativo' : 'Inativo'}
-            </Badge>
+            <HStack spacing={2} align="center">
+              <Text fontSize="sm" color="gray.400">Inativo</Text>
+              <Switch 
+                colorScheme="purple"
+                isChecked={block.active}
+                onChange={(e) => {
+                  // Atualizar estado do bloco
+                  onUpdateBlock({ ...block, active: e.target.checked })
+                }}
+              />
+              <Text fontSize="sm" color="gray.400">Ativo</Text>
+            </HStack>
           </HStack>
 
           <Text fontSize="sm" color="gray.400">
@@ -688,7 +697,15 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
       </Box>
       
       {/* Barra de Ações Fixa */}
-      <Box borderTop="1px solid" borderColor="gray.600" bg="gray.800" p={4}>
+      <Box 
+        position="sticky" 
+        bottom={0} 
+        borderTop="1px solid" 
+        borderColor="gray.600" 
+        bg="gray.800" 
+        p={4}
+        zIndex={10}
+      >
         <HStack justify="space-between" align="center">
           <Text fontSize="xs" color="gray.400">
             💾 Auto-salvamento ativo
@@ -714,7 +731,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             
             <Button
               size="sm"
-              colorScheme="purple"
+              colorScheme="green"
               onClick={() => {
                 // Funcionalidade de salvar
                 toast({
