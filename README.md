@@ -215,6 +215,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📋 Changelog
 
+### v1.6.2 - Tema por Bloco (Chakra Tokens) (September 2025)
+- 🎨 Aba "Tema" por bloco: campos string aceitando exclusivamente tokens do Chakra (ex.: purple.500, gray.900)
+- ⚙️ Abas reorganizadas: Definições, Layout, Tema, Conteúdo
+- 🧷 Footer do editor sticky com espaçamento adequado
+
 ### v1.6.1 - UX do Editor + Auth Storage (September 2025)
 - 🪄 BlocksEditor: seleciona automaticamente o primeiro bloco ao carregar
 - ➕ Botão "Adicionar bloco": barra full-width abaixo do carrossel

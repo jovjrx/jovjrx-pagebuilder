@@ -42,7 +42,7 @@ interface BlockEditorProps {
 }
 
 export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps) {
-  const [activeTab, setActiveTab] = useState(1) // 0: Cabeçalho, 1: Conteúdo
+  const [activeTab, setActiveTab] = useState(3) // 0: Definições, 1: Layout, 2: Tema, 3: Conteúdo
   const [uploadState, setUploadState] = useState<{ index: number | null; progress: number }>({ index: null, progress: 0 })
   const toast = useToast()
 
@@ -144,6 +144,15 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
     updateBlockField('content', newContent)
   }
+
+  // Theme helpers
+  const updateThemeField = (key: 'background' | 'text' | 'accent' | 'border' | 'shadow', value: string) => {
+    updateBlockField('theme', { ...(block.theme || {}), [key]: value })
+  }
+  const chakraAccentOptions = ['purple.500','blue.500','teal.500','pink.500','orange.500','red.500','green.500','yellow.500']
+  const chakraBgOptions = ['gray.900','gray.800','gray.900','white','black']
+  const chakraTextOptions = ['whiteAlpha.900','gray.100','gray.900','blackAlpha.900']
+  const chakraBorderOptions = ['gray.700','gray.600','gray.300','gray.200','whiteAlpha.300']
 
   // Upload handler for media
   const handleUpload = async (file: File, index: number) => {
@@ -421,7 +430,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
   return (
     <Box h="full" display="flex" flexDirection="column">
-      <Box flex={1} overflowY="auto" p={6}>
+      <Box flex={1} p={6} pb={24}>
         <VStack spacing={6} align="stretch">
           {/* Header */}
           <VStack spacing={3} align="stretch">
@@ -445,7 +454,9 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
           {/* Tabs */}
           <Tabs index={activeTab} onChange={(i) => setActiveTab(i)} colorScheme="purple" variant="enclosed">
             <TabList>
-              <Tab>📋 Cabeçalho</Tab>
+              <Tab>⚙️ Definições</Tab>
+              <Tab>🧩 Layout</Tab>
+              <Tab>🎨 Tema</Tab>
               <Tab>🧩 Conteúdo</Tab>
             </TabList>
             <TabPanels>
@@ -492,86 +503,137 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
                   </Box>
 
                   <Divider borderColor="gray.600" />
+                </VStack>
+              </TabPanel>
 
-                  {/* Layout */}
-                  <Accordion allowToggle>
-                    <AccordionItem border="1px solid" borderColor="gray.600" borderRadius="md">
-                      <AccordionButton bg="gray.700" _hover={{ bg: 'gray.600' }}>
-                        <Box flex="1" textAlign="left" fontWeight="semibold">🧩 Layout</Box>
-                        <AccordionIcon />
-                      </AccordionButton>
-                      <AccordionPanel pb={4} bg="gray.750">
-                        <VStack spacing={3} align="stretch">
-                          <FormControl>
-                            <FormLabel>Variante</FormLabel>
-                            <Select
-                              value={block.layout?.variant || 'stack'}
-                              onChange={(e) => updateBlockField('layout', { ...block.layout, variant: e.target.value as any })}
-                              size="sm"
-                            >
-                              <option value="stack">Empilhado</option>
-                              <option value="split">Dividido</option>
-                              <option value="grid">Grade</option>
-                              <option value="carousel">Carrossel</option>
-                            </Select>
-                          </FormControl>
+              {/* Layout Tab */}
+              <TabPanel px={0}>
+                <Accordion allowToggle>
+                  <AccordionItem border="1px solid" borderColor="gray.600" borderRadius="md">
+                    <AccordionButton bg="gray.700" _hover={{ bg: 'gray.600' }}>
+                      <Box flex="1" textAlign="left" fontWeight="semibold">🧩 Layout</Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel pb={4} bg="gray.750">
+                      <VStack spacing={3} align="stretch">
+                        <FormControl>
+                          <FormLabel>Variante</FormLabel>
+                          <Select
+                            value={block.layout?.variant || 'stack'}
+                            onChange={(e) => updateBlockField('layout', { ...block.layout, variant: e.target.value as any })}
+                            size="sm"
+                          >
+                            <option value="stack">Empilhado</option>
+                            <option value="split">Dividido</option>
+                            <option value="grid">Grade</option>
+                            <option value="carousel">Carrossel</option>
+                          </Select>
+                        </FormControl>
 
-                          <FormControl>
-                            <FormLabel>Container</FormLabel>
-                            <Select
-                              value={block.layout?.container || 'boxed'}
-                              onChange={(e) => updateBlockField('layout', { ...block.layout, container: e.target.value as any })}
-                              size="sm"
-                            >
-                              <option value="boxed">Boxed (centralizado)</option>
-                              <option value="fluid">Fluido (100%)</option>
-                              <option value="none">Sem container (template)</option>
-                            </Select>
-                          </FormControl>
+                        <FormControl>
+                          <FormLabel>Container</FormLabel>
+                          <Select
+                            value={block.layout?.container || 'boxed'}
+                            onChange={(e) => updateBlockField('layout', { ...block.layout, container: e.target.value as any })}
+                            size="sm"
+                          >
+                            <option value="boxed">Boxed (centralizado)</option>
+                            <option value="fluid">Fluido (100%)</option>
+                            <option value="none">Sem container (template)</option>
+                          </Select>
+                        </FormControl>
 
-                          {block.layout?.variant === 'grid' && (
-                            <HStack>
-                              <FormControl>
-                                <FormLabel>Colunas (grid)</FormLabel>
-                                <Select
-                                  value={block.layout?.gridColumns || 2}
-                                  onChange={(e) => updateBlockField('layout', { ...block.layout, gridColumns: parseInt(e.target.value) })}
-                                  size="sm"
-                                >
-                                  <option value={1}>1</option>
-                                  <option value={2}>2</option>
-                                  <option value={3}>3</option>
-                                  <option value={4}>4</option>
-                                </Select>
-                              </FormControl>
-                              <FormControl>
-                                <FormLabel>Template Columns</FormLabel>
-                                <Input
-                                  value={block.layout?.templateColumns || ''}
-                                  onChange={(e) => updateBlockField('layout', { ...block.layout, templateColumns: e.target.value })}
-                                  size="sm"
-                                  placeholder="ex: 2fr 1fr ou repeat(3, 1fr)"
-                                />
-                              </FormControl>
-                            </HStack>
-                          )}
+                        {block.layout?.variant === 'grid' && (
+                          <HStack>
+                            <FormControl>
+                              <FormLabel>Colunas (grid)</FormLabel>
+                              <Select
+                                value={block.layout?.gridColumns || 2}
+                                onChange={(e) => updateBlockField('layout', { ...block.layout, gridColumns: parseInt(e.target.value) })}
+                                size="sm"
+                              >
+                                <option value={1}>1</option>
+                                <option value={2}>2</option>
+                                <option value={3}>3</option>
+                                <option value={4}>4</option>
+                              </Select>
+                            </FormControl>
+                            <FormControl>
+                              <FormLabel>Template Columns</FormLabel>
+                              <Input
+                                value={block.layout?.templateColumns || ''}
+                                onChange={(e) => updateBlockField('layout', { ...block.layout, templateColumns: e.target.value })}
+                                size="sm"
+                                placeholder="ex: 2fr 1fr ou repeat(3, 1fr)"
+                              />
+                            </FormControl>
+                          </HStack>
+                        )}
 
-                          <FormControl>
-                            <FormLabel>Alinhamento</FormLabel>
-                            <Select
-                              value={block.layout?.align || 'center'}
-                              onChange={(e) => updateBlockField('layout', { ...block.layout, align: e.target.value as any })}
-                              size="sm"
-                            >
-                              <option value="start">Início</option>
-                              <option value="center">Centro</option>
-                              <option value="end">Fim</option>
-                            </Select>
-                          </FormControl>
-                        </VStack>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
+                        <FormControl>
+                          <FormLabel>Alinhamento</FormLabel>
+                          <Select
+                            value={block.layout?.align || 'center'}
+                            onChange={(e) => updateBlockField('layout', { ...block.layout, align: e.target.value as any })}
+                            size="sm"
+                          >
+                            <option value="start">Início</option>
+                            <option value="center">Centro</option>
+                            <option value="end">Fim</option>
+                          </Select>
+                        </FormControl>
+                      </VStack>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              </TabPanel>
+
+              {/* Theme Tab */}
+              <TabPanel px={0}>
+                <VStack spacing={4} align="stretch">
+                  <Text fontSize="sm" color="gray.400">Defina as cores do bloco usando <b>tokens do Chakra</b> (ex.: purple.500, gray.900, whiteAlpha.900). Todos os campos aceitam apenas string.</Text>
+
+                  <FormControl>
+                    <FormLabel>Accent</FormLabel>
+                    <HStack>
+                      <Input size="sm" placeholder="purple.500" value={block.theme?.accent || ''} onChange={(e) => updateThemeField('accent', e.target.value)} />
+                      {/* Quick picks */}
+                      <HStack>
+                        {chakraAccentOptions.map(opt => (
+                          <Button key={opt} size="xs" onClick={() => updateThemeField('accent', opt)} bg={opt} color="white">{opt.split('.')[0]}</Button>
+                        ))}
+                      </HStack>
+                    </HStack>
+                  </FormControl>
+
+                  <HStack align="start">
+                    <FormControl>
+                      <FormLabel>Background</FormLabel>
+                      <Input size="sm" placeholder="gray.900" value={block.theme?.background || ''} onChange={(e) => updateThemeField('background', e.target.value)} />
+                      <Box mt={2} h="8" borderRadius="md" bg={block.theme?.background || 'transparent'} border="1px solid" borderColor="gray.600" />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Texto</FormLabel>
+                      <Input size="sm" placeholder="whiteAlpha.900" value={block.theme?.text || ''} onChange={(e) => updateThemeField('text', e.target.value)} />
+                      <HStack mt={2}>
+                        <Box w="24" h="8" borderRadius="md" bg={block.theme?.background || 'gray.800'} border="1px solid" borderColor="gray.600" display="flex" alignItems="center" justifyContent="center">
+                          <Text fontSize="xs" color={block.theme?.text || 'whiteAlpha.900'}>Aa</Text>
+                        </Box>
+                      </HStack>
+                    </FormControl>
+                  </HStack>
+
+                  <HStack align="start">
+                    <FormControl>
+                      <FormLabel>Border</FormLabel>
+                      <Input size="sm" placeholder="gray.700" value={block.theme?.border || ''} onChange={(e) => updateThemeField('border', e.target.value)} />
+                      <Box mt={2} h="8" borderRadius="md" borderWidth="2px" borderColor={block.theme?.border || 'gray.700'} />
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Sombra (shadow)</FormLabel>
+                      <Input size="sm" placeholder="ex.: 0 10px 30px rgba(0,0,0,0.3)" value={block.theme?.shadow || ''} onChange={(e) => updateThemeField('shadow', e.target.value)} />
+                    </FormControl>
+                  </HStack>
                 </VStack>
               </TabPanel>
 
@@ -620,7 +682,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
         </VStack>
       </Box>
 
-      {/* Barra de Ações Fixa */}
+      {/* Barra de Ações Fixa (sticky) */}
       <Box
         position="sticky"
         bottom={0}
