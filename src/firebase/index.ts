@@ -1,5 +1,5 @@
 import { initializeApp, FirebaseApp, getApps } from 'firebase/app'
-import { getFirestore, Firestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, orderBy, getDocs, serverTimestamp } from 'firebase/firestore'
+import { getFirestore, Firestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, getDocs, serverTimestamp } from 'firebase/firestore'
 import { FirebaseConfig, Page, Block } from '../types'
 
 // Firebase instance management
@@ -167,6 +167,80 @@ export function generatePageId(): string {
 
 export function generateBlockId(): string {
   return `block_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+}
+
+// Blocks-only mode functions
+export async function saveBlockStandalone(
+  blockData: Partial<Block>,
+  collectionName: string = 'blocks'
+): Promise<string> {
+  const db = getFirestoreInstance()
+  
+  // Generate ID if not provided
+  const blockId = blockData.id || generateBlockId()
+  const blockRef = doc(db, collectionName, blockId)
+  
+  const dataToSave = {
+    ...blockData,
+    id: blockId,
+    updated_at: serverTimestamp(),
+  }
+  
+  // Add created_at if it's a new block
+  const existingBlock = await getDoc(blockRef)
+  if (!existingBlock.exists()) {
+    dataToSave.created_at = serverTimestamp()
+  }
+  
+  await setDoc(blockRef, dataToSave, { merge: true })
+  return blockId
+}
+
+export async function loadBlocksByParentId(
+  parentId: string,
+  collectionName: string = 'blocks'
+): Promise<Block[]> {
+  const db = getFirestoreInstance()
+  const blocksRef = collection(db, collectionName)
+  const q = query(
+    blocksRef, 
+    where('parentId', '==', parentId),
+    orderBy('order', 'asc')
+  )
+  const querySnapshot = await getDocs(q)
+  
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Block[]
+}
+
+export async function deleteBlockStandalone(
+  blockId: string,
+  collectionName: string = 'blocks'
+): Promise<void> {
+  const db = getFirestoreInstance()
+  const blockRef = doc(db, collectionName, blockId)
+  await deleteDoc(blockRef)
+}
+
+export async function reorderBlocksByParentId(
+  parentId: string,
+  blocks: Block[],
+  collectionName: string = 'blocks'
+): Promise<void> {
+  const db = getFirestoreInstance()
+  
+  // Update all blocks with new order
+  const updatePromises = blocks.map((block, index) => {
+    const blockRef = doc(db, collectionName, block.id!)
+    return updateDoc(blockRef, {
+      order: index,
+      updated_at: serverTimestamp()
+    })
+  })
+  
+  await Promise.all(updatePromises)
 }
 
 // Error handling

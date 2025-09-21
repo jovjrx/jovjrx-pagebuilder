@@ -30,24 +30,57 @@ import { darkPurpleTheme } from '../../themes/dark-purple'
 import { BlocksList } from './BlocksList'
 import { BlockEditor } from './BlockEditor'
 import { PageSettings } from './PageSettings'
+import { BlocksEditor } from './BlocksEditor'
 
 interface PageBuilderProps extends PageBuilderConfig {
-  pageId: string
+  pageId?: string
+  parentId?: string
+  mode?: 'page' | 'blocks-only'
   className?: string
 }
 
 export function PageBuilder({
   pageId,
+  parentId,
+  mode = 'page',
   firebaseConfig,
   theme = darkPurpleTheme,
   language = 'pt-BR',
   availableLanguages = ['pt-BR', 'en', 'es'],
-  collection = 'pages',
+  collection = mode === 'blocks-only' ? 'blocks' : 'pages',
   onSave,
   onError,
   onLanguageChange,
   className
 }: PageBuilderProps) {
+  
+  // Validate props based on mode
+  if (mode === 'blocks-only' && !parentId) {
+    throw new Error('parentId is required when mode is "blocks-only"')
+  }
+  if (mode === 'page' && !pageId) {
+    throw new Error('pageId is required when mode is "page"')
+  }
+  
+  // If blocks-only mode, render BlocksEditor directly
+  if (mode === 'blocks-only' && parentId) {
+    return (
+      <div className={className}>
+        <BlocksEditor
+          parentId={parentId}
+          firebaseConfig={firebaseConfig}
+          theme={theme}
+          language={language}
+          availableLanguages={availableLanguages}
+          collection={collection}
+          onSave={onSave as any} // Type conversion for blocks-only mode
+          onError={onError}
+          onLanguageChange={onLanguageChange}
+        />
+      </div>
+    )
+  }
+
   // State
   const [page, setPage] = useState<Page | null>(null)
   const [blocks, setBlocks] = useState<Block[]>([])
@@ -80,6 +113,8 @@ export function PageBuilder({
 
   // Load page data
   const loadPageData = async () => {
+    if (!pageId) return
+    
     try {
       const pageData = await loadPage(pageId, collection)
       const blocksData = await loadBlocks(pageId, collection)
@@ -110,7 +145,7 @@ export function PageBuilder({
 
   // Save page
   const handleSave = async () => {
-    if (!page) return
+    if (!page || !pageId) return
 
     setIsSaving(true)
     try {

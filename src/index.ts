@@ -9,6 +9,7 @@ export { BlockRenderer } from './components/renderer/BlockRenderer'
 export { BlocksList } from './components/editor/BlocksList'
 export { BlockEditor } from './components/editor/BlockEditor'
 export { PageSettings } from './components/editor/PageSettings'
+export { BlocksEditor } from './components/editor/BlocksEditor'
 
 // Block Components
 export {

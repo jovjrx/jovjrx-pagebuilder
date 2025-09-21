@@ -170,6 +170,7 @@ export interface Block {
   order: number
   active: boolean
   version: 'draft' | 'published'
+  parentId?: string // For blocks-only mode
   created_at?: any
   updated_at?: any
 }
@@ -213,5 +214,39 @@ export interface PageRendererConfig {
   mode?: 'light' | 'dark' | 'auto'
   collection?: string
   onLoad?: (page: Page) => void
+  onError?: (error: Error) => void
+}
+
+// Blocks-only mode configuration
+export interface BlocksEditorConfig {
+  parentId: string
+  firebaseConfig: FirebaseConfig
+  theme?: string | PageBuilderTheme
+  language?: string
+  availableLanguages?: string[]
+  collection?: string
+  onBlocksChange?: (blocks: Block[]) => void
+  onSave?: (blocks: Block[]) => void
+  onError?: (error: Error) => void
+  onLanguageChange?: (language: string) => void
+  // Customization options
+  hideHeader?: boolean
+  hideSaveButton?: boolean
+  hidePreviewButton?: boolean
+  hideLanguageSelector?: boolean
+  autoSave?: boolean
+  customActions?: React.ReactNode
+  saveButtonText?: string
+  saveButtonColor?: string
+}
+
+export interface BlocksRendererConfig {
+  parentId: string
+  firebaseConfig: FirebaseConfig
+  theme?: string | PageBuilderTheme
+  language?: string
+  mode?: 'light' | 'dark' | 'auto'
+  collection?: string
+  onLoad?: (blocks: Block[]) => void
   onError?: (error: Error) => void
 }
