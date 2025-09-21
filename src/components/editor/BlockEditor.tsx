@@ -202,6 +202,7 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
                 <option value="paragraph">Parágrafo</option>
                 <option value="caption">Legenda</option>
                 <option value="kpi">KPI/Número</option>
+                <option value="list">📋 Lista</option>
               </Select>
             </FormControl>
 

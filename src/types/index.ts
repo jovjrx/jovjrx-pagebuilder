@@ -70,7 +70,7 @@ export interface ActionContent {
 
 export interface TextContent {
   type: 'text'
-  variant: 'heading' | 'subtitle' | 'paragraph' | 'caption' | 'kpi'
+  variant: 'heading' | 'subtitle' | 'paragraph' | 'caption' | 'kpi' | 'list'
   value: MultiLanguageContent
   order: number
 }

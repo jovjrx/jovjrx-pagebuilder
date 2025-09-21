@@ -72,11 +72,33 @@ export function TextBlock({ block, theme, language, onPurchase, onAddToCart, pur
                     {text}
                   </Text>
                 )
+              case 'list':
+                return (
+                  <HTMLContent 
+                    key={index} 
+                    content={text}
+                    fallback={text}
+                    color={textColor}
+                    sx={{
+                      '& ul, & ol': {
+                        marginLeft: '1.5em',
+                        marginBottom: '1em'
+                      },
+                      '& li': {
+                        marginBottom: '0.5em',
+                        lineHeight: 'tall'
+                      }
+                    }}
+                  />
+                )
               default:
                 return (
-                  <Text key={index} color={textColor}>
-                    {text}
-                  </Text>
+                  <HTMLContent 
+                    key={index} 
+                    content={text}
+                    fallback={text}
+                    color={textColor}
+                  />
                 )
             }
           })}
