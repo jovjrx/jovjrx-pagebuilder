@@ -4,6 +4,7 @@
 export { PageBuilder } from './components/editor/PageBuilder'
 export { PageRenderer } from './components/renderer/PageRenderer'
 export { BlockRenderer } from './components/renderer/BlockRenderer'
+export { BlocksRenderer } from './components/renderer/BlocksRenderer'
 
 // Editor Components
 export { BlocksList } from './components/editor/BlocksList'
@@ -29,8 +30,9 @@ export {
 // TimerBlock
 
 // UI Components
-export { ThemeProvider, ThemeProviderWithContext, usePageBuilderTheme, useThemeContext } from './components/ui/ThemeProvider'
-export { LanguageProvider, LanguageSelector, useLanguageContext, withLanguage } from './components/ui/LanguageProvider'
+export { ThemeProvider } from './components/ui/ThemeProvider'
+export { LanguageProvider } from './components/ui/LanguageProvider'
+export { PurchaseButton } from './components/ui/PurchaseButton'
 
 // Hooks
 export { useLanguage, useLanguagePersistence, useLanguageDetection } from './hooks/useLanguage'
@@ -55,6 +57,7 @@ export type {
   Page,
   PageBuilderConfig,
   PageRendererConfig,
+  PurchaseButtonConfig,
 } from './types'
 
 // Themes

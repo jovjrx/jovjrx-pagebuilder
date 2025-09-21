@@ -13,14 +13,17 @@ import {
 } from '@chakra-ui/react'
 import { Block, PageBuilderTheme, ActionsContent } from '../../types'
 import { getMultiLanguageValue } from '../../i18n'
+import { PurchaseButton } from '../ui/PurchaseButton'
 
 interface ActionsBlockProps {
   block: Block
   theme: PageBuilderTheme
   language: string
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
 }
 
-export function ActionsBlock({ block, theme, language }: ActionsBlockProps) {
+export function ActionsBlock({ block, theme, language, onPurchase, onAddToCart }: ActionsBlockProps) {
   const actionsContent = block.content.find(c => c.type === 'actions') as ActionsContent | undefined
   
   if (!actionsContent) return null
@@ -55,20 +58,35 @@ export function ActionsBlock({ block, theme, language }: ActionsBlockProps) {
           </VStack>
 
           {/* Action Buttons */}
-          <HStack spacing={4} flexWrap="wrap" justify="center">
-            <Button
-              size="lg"
-              colorScheme="purple"
-              as="a"
-              href={primary.url}
-              px={8}
-              py={6}
-              fontSize="lg"
-              fontWeight="bold"
-            >
-              {getMultiLanguageValue(primary.text, language)}
-            </Button>
+          <VStack spacing={4} align="center">
+            {/* Primary Action */}
+            {primary.action === 'buy' && primary.price && onPurchase ? (
+              <PurchaseButton
+                productId={block.id || 'unknown'}
+                productName={getMultiLanguageValue(block.title, language)}
+                price={primary.price}
+                text={getMultiLanguageValue(primary.text, language)}
+                colorScheme="purple"
+                size="lg"
+                onPurchase={onPurchase}
+                onAddToCart={onAddToCart}
+              />
+            ) : (
+              <Button
+                size="lg"
+                colorScheme="purple"
+                as="a"
+                href={primary.url}
+                px={8}
+                py={6}
+                fontSize="lg"
+                fontWeight="bold"
+              >
+                {getMultiLanguageValue(primary.text, language)}
+              </Button>
+            )}
 
+            {/* Secondary Action */}
             {secondary && (
               <Button
                 size="lg"
@@ -80,7 +98,7 @@ export function ActionsBlock({ block, theme, language }: ActionsBlockProps) {
                 {getMultiLanguageValue(secondary.text, language)}
               </Button>
             )}
-          </HStack>
+          </VStack>
 
           {/* Benefits */}
           {benefits && benefits.length > 0 && (

@@ -22,6 +22,8 @@ interface BlockRendererProps {
   language: string
   isFirst?: boolean
   isLast?: boolean
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
 }
 
 export function BlockRenderer({ 
@@ -29,7 +31,9 @@ export function BlockRenderer({
   theme, 
   language, 
   isFirst = false, 
-  isLast = false 
+  isLast = false,
+  onPurchase,
+  onAddToCart
 }: BlockRendererProps) {
   // Don't render inactive blocks
   if (!block.active) {
@@ -54,6 +58,8 @@ export function BlockRenderer({
     language,
     isFirst,
     isLast,
+    onPurchase,
+    onAddToCart,
   }
 
   // Render appropriate block component

@@ -247,6 +247,44 @@ export interface BlocksRendererConfig {
   language?: string
   mode?: 'light' | 'dark' | 'auto'
   collection?: string
+  data?: Block[] // Dados pré-carregados (SSR/SSG)
+  widthContainer?: string // Largura máxima do container
   onLoad?: (blocks: Block[]) => void
   onError?: (error: Error) => void
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+}
+
+export interface PurchaseButtonConfig {
+  // Produto info
+  productId: string
+  productName: string
+  price: {
+    amount: number
+    currency: string
+    original?: number
+  }
+  
+  // Visual options
+  variant?: 'solid' | 'outline' | 'ghost' | 'link'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
+  colorScheme?: string
+  text?: string
+  showPrice?: boolean
+  showDiscount?: boolean
+  
+  // States
+  isLoading?: boolean
+  loadingText?: string
+  disabled?: boolean
+  
+  // Callbacks
+  onPurchase?: (productId: string, productData: any) => void | Promise<void>
+  onAddToCart?: (productId: string, productData: any) => void | Promise<void>
+  onError?: (error: Error) => void
+  
+  // Props extras
+  className?: string
+  buttonProps?: any
+  children?: React.ReactNode
 }
