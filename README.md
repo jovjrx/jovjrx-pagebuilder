@@ -17,7 +17,8 @@ JovJrx PageBuilder is a **React component library** that provides a complete vis
 
 ### 🎨 **For Content Creators**
 - **Visual Editor** - Drag & drop interface for building pages
-- **Professional Blocks** - Hero sections, features, testimonials, pricing, and more
+- **Professional Blocks** - Hero, Features, CTA, Content, and specialized blocks
+- **Flexible Architecture** - Block types for structure, Content types for data
 - **Multi-language** - Built-in i18n support for global audiences
 - **Responsive** - Mobile-first design that works on all devices
 - **Real-time Preview** - See changes as you build
@@ -211,6 +212,23 @@ service cloud.firestore {
 ## 📄 License
 
 MIT License - see [LICENSE](LICENSE) file for details.
+
+## 📋 Changelog
+
+### v1.5.0 - Architectural Refactoring (September 2025)
+- 🔥 **BREAKING**: Refactored Block.type architecture for better clarity
+- ✨ **NEW**: CTABlock component for optimized call-to-action layouts
+- ✨ **NEW**: ContentBlock generic component for flexible content combinations
+- 🏗️ **Block types now represent structure**: `hero`, `features`, `cta`, `content`, `timer`
+- 📝 **Content types represent data**: `text`, `media`, `list`, `actions`, `timer`
+- 📚 **Updated documentation** with new architecture examples
+- 🎯 **Improved UX** in block type selection modal
+
+### v1.4.1 - React 19 & Server-Side Support
+- ⚡ React 19 compatible HTMLEditor component
+- 📖 Complete server-side rendering documentation
+- 🔧 Enhanced UX improvements in BlockEditor
+- 🛡️ Improved HTML content sanitization
 
 ## 🤝 Contributing
 
