@@ -493,77 +493,85 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
 
                   <Divider borderColor="gray.600" />
 
-                  {/* Layout Basics */}
-                  <VStack spacing={3} align="stretch">
-                    <Heading size="sm">Layout</Heading>
+                  {/* Layout */}
+                  <Accordion allowToggle>
+                    <AccordionItem border="1px solid" borderColor="gray.600" borderRadius="md">
+                      <AccordionButton bg="gray.700" _hover={{ bg: 'gray.600' }}>
+                        <Box flex="1" textAlign="left" fontWeight="semibold">🧩 Layout</Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                      <AccordionPanel pb={4} bg="gray.750">
+                        <VStack spacing={3} align="stretch">
+                          <FormControl>
+                            <FormLabel>Variante</FormLabel>
+                            <Select
+                              value={block.layout?.variant || 'stack'}
+                              onChange={(e) => updateBlockField('layout', { ...block.layout, variant: e.target.value as any })}
+                              size="sm"
+                            >
+                              <option value="stack">Empilhado</option>
+                              <option value="split">Dividido</option>
+                              <option value="grid">Grade</option>
+                              <option value="carousel">Carrossel</option>
+                            </Select>
+                          </FormControl>
 
-                    <FormControl>
-                      <FormLabel>Variante</FormLabel>
-                      <Select
-                        value={block.layout?.variant || 'stack'}
-                        onChange={(e) => updateBlockField('layout', { ...block.layout, variant: e.target.value as any })}
-                        size="sm"
-                      >
-                        <option value="stack">Empilhado</option>
-                        <option value="split">Dividido</option>
-                        <option value="grid">Grade</option>
-                        <option value="carousel">Carrossel</option>
-                      </Select>
-                    </FormControl>
+                          <FormControl>
+                            <FormLabel>Container</FormLabel>
+                            <Select
+                              value={block.layout?.container || 'boxed'}
+                              onChange={(e) => updateBlockField('layout', { ...block.layout, container: e.target.value as any })}
+                              size="sm"
+                            >
+                              <option value="boxed">Boxed (centralizado)</option>
+                              <option value="fluid">Fluido (100%)</option>
+                              <option value="none">Sem container (template)</option>
+                            </Select>
+                          </FormControl>
 
-                    <FormControl>
-                      <FormLabel>Container</FormLabel>
-                      <Select
-                        value={block.layout?.container || 'boxed'}
-                        onChange={(e) => updateBlockField('layout', { ...block.layout, container: e.target.value as any })}
-                        size="sm"
-                      >
-                        <option value="boxed">Boxed (centralizado)</option>
-                        <option value="fluid">Fluido (100%)</option>
-                        <option value="none">Sem container (template)</option>
-                      </Select>
-                    </FormControl>
+                          {block.layout?.variant === 'grid' && (
+                            <HStack>
+                              <FormControl>
+                                <FormLabel>Colunas (grid)</FormLabel>
+                                <Select
+                                  value={block.layout?.gridColumns || 2}
+                                  onChange={(e) => updateBlockField('layout', { ...block.layout, gridColumns: parseInt(e.target.value) })}
+                                  size="sm"
+                                >
+                                  <option value={1}>1</option>
+                                  <option value={2}>2</option>
+                                  <option value={3}>3</option>
+                                  <option value={4}>4</option>
+                                </Select>
+                              </FormControl>
+                              <FormControl>
+                                <FormLabel>Template Columns</FormLabel>
+                                <Input
+                                  value={block.layout?.templateColumns || ''}
+                                  onChange={(e) => updateBlockField('layout', { ...block.layout, templateColumns: e.target.value })}
+                                  size="sm"
+                                  placeholder="ex: 2fr 1fr ou repeat(3, 1fr)"
+                                />
+                              </FormControl>
+                            </HStack>
+                          )}
 
-                    {block.layout?.variant === 'grid' && (
-                      <HStack>
-                        <FormControl>
-                          <FormLabel>Colunas (grid)</FormLabel>
-                          <Select
-                            value={block.layout?.gridColumns || 2}
-                            onChange={(e) => updateBlockField('layout', { ...block.layout, gridColumns: parseInt(e.target.value) })}
-                            size="sm"
-                          >
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
-                            <option value={4}>4</option>
-                          </Select>
-                        </FormControl>
-                        <FormControl>
-                          <FormLabel>Template Columns</FormLabel>
-                          <Input
-                            value={block.layout?.templateColumns || ''}
-                            onChange={(e) => updateBlockField('layout', { ...block.layout, templateColumns: e.target.value })}
-                            size="sm"
-                            placeholder="ex: 2fr 1fr ou repeat(3, 1fr)"
-                          />
-                        </FormControl>
-                      </HStack>
-                    )}
-
-                    <FormControl>
-                      <FormLabel>Alinhamento</FormLabel>
-                      <Select
-                        value={block.layout?.align || 'center'}
-                        onChange={(e) => updateBlockField('layout', { ...block.layout, align: e.target.value as any })}
-                        size="sm"
-                      >
-                        <option value="start">Início</option>
-                        <option value="center">Centro</option>
-                        <option value="end">Fim</option>
-                      </Select>
-                    </FormControl>
-                  </VStack>
+                          <FormControl>
+                            <FormLabel>Alinhamento</FormLabel>
+                            <Select
+                              value={block.layout?.align || 'center'}
+                              onChange={(e) => updateBlockField('layout', { ...block.layout, align: e.target.value as any })}
+                              size="sm"
+                            >
+                              <option value="start">Início</option>
+                              <option value="center">Centro</option>
+                              <option value="end">Fim</option>
+                            </Select>
+                          </FormControl>
+                        </VStack>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  </Accordion>
                 </VStack>
               </TabPanel>
 

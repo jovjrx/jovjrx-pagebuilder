@@ -1,6 +1,7 @@
 import { initializeApp, FirebaseApp, getApps } from 'firebase/app'
 import { getFirestore, Firestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, query, where, orderBy, getDocs, serverTimestamp } from 'firebase/firestore'
 import { getStorage, FirebaseStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'
+import { getAuth, signInAnonymously } from 'firebase/auth'
 import { FirebaseConfig, Page, Block } from '../types'
 
 // Firebase instance management
@@ -37,6 +38,22 @@ export function getStorageInstance(): FirebaseStorage {
     storage = getStorage(firebaseApp)
   }
   return storage
+}
+
+// Auth helper (optional): ensure an authenticated session for Storage rules
+export async function ensureAnonymousAuth(): Promise<void> {
+  if (!firebaseApp) {
+    throw new Error('Firebase not initialized. Call initializeFirebase first.')
+  }
+  const auth = getAuth(firebaseApp)
+  if (!auth.currentUser) {
+    try {
+      await signInAnonymously(auth)
+    } catch (e) {
+      // Swallow to avoid blocking editor usage; storage may still fail if rules require auth
+      console.warn('Anonymous auth failed:', e)
+    }
+  }
 }
 
 // Page operations

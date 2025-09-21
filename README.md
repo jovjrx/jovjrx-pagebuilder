@@ -215,6 +215,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📋 Changelog
 
+### v1.6.1 - UX do Editor + Auth Storage (September 2025)
+- 🪄 BlocksEditor: seleciona automaticamente o primeiro bloco ao carregar
+- ➕ Botão "Adicionar bloco": barra full-width abaixo do carrossel
+- 🔐 Uploads: tentativa de autenticação anônima automática (`ensureAnonymousAuth`) para destravar regras de Storage que requerem `request.auth != null`
+- 🧹 Repo URL normalizado no package.json (aviso do npm)
+
 ### v1.6.0 - Uploads + Layout Templates (September 2025)
 - ✨ Media upload dropzone integrated in editor with progress
 - ☁️ Firebase Storage helper `uploadMediaFile(file, pathPrefix?, onProgress?)`

@@ -1,6 +1,6 @@
 {
   "name": "jovjrx-pagebuilder",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Universal Page Builder for Next.js with Firebase - React 19 Compatible with SSR/SSG Support",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -47,7 +47,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jovjrx/jovjrx-pagebuilder.git"
+    "url": "git+https://github.com/jovjrx/jovjrx-pagebuilder.git"
   },
   "bugs": {
     "url": "https://github.com/jovjrx/jovjrx-pagebuilder/issues"

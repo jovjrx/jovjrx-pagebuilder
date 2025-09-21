@@ -29,7 +29,8 @@ import {
   saveBlockStandalone, 
   deleteBlockStandalone,
   reorderBlocksByParentId,
-  generateBlockId 
+  generateBlockId,
+  ensureAnonymousAuth 
 } from '../../firebase'
 import { getTranslation, supportedLanguages } from '../../i18n'
 import { darkPurpleTheme } from '../../themes/dark-purple'
@@ -77,6 +78,8 @@ export function BlocksEditor({
     const initializeAndLoad = async () => {
       try {
         initializeFirebase(firebaseConfig)
+        // Attempt anonymous auth so Storage rules that require auth will allow uploads
+        await ensureAnonymousAuth()
         await loadBlocksData()
       } catch (error) {
         console.error('Error initializing:', error)
@@ -94,6 +97,16 @@ export function BlocksEditor({
     try {
       const blocksData = await loadBlocksByParentId(parentId, collection)
       setBlocks(blocksData)
+      // Auto-select first block on initial load
+      if (blocksData.length > 0) {
+        setSelectedBlock((prev) => {
+          if (!prev) return blocksData[0]
+          const stillExists = blocksData.find(b => b.id === prev.id)
+          return stillExists || blocksData[0]
+        })
+      } else {
+        setSelectedBlock(null)
+      }
       onBlocksChange?.(blocksData)
     } catch (error) {
       console.error('Error loading blocks:', error)
@@ -337,8 +350,8 @@ export function BlocksEditor({
         </Box>
       )}
 
-      {/* Main Content - Vertical layout with top carousel and editor below */}
-      <VStack align="stretch" spacing={4} h={hideHeader ? "100vh" : "calc(100vh - 73px)"} p={4}>
+  {/* Main Content - Vertical layout with top carousel and editor below (page scroll enabled) */}
+  <VStack align="stretch" spacing={4} p={4}>
         {/* Horizontal Blocks Carousel */}
         <Box position="relative">
           {/* Edge fade */}
@@ -358,19 +371,6 @@ export function BlocksEditor({
               '::-webkit-scrollbar-track': { background: '#1f2937' },
             }}
           >
-            <Button
-              leftIcon={<AddIcon />}
-              colorScheme="purple"
-              variant="outline"
-              size="sm"
-              onClick={onBlockTypeModalOpen}
-              _hover={{ transform: 'translateY(-1px)' }}
-              _active={{ transform: 'translateY(0px) scale(0.98)' }}
-              transition="all 0.15s ease"
-            >
-              {getTranslation('editor.addBlock', currentLanguage)}
-            </Button>
-
             {blocks.map((block) => (
               <Box
                 key={block.id}
@@ -399,6 +399,20 @@ export function BlocksEditor({
               </Box>
             ))}
           </HStack>
+        </Box>
+
+        {/* Full-width Add Block bar below carousel */}
+        <Box>
+          <Button
+            w="full"
+            leftIcon={<AddIcon />}
+            colorScheme="purple"
+            variant="solid"
+            size="sm"
+            onClick={onBlockTypeModalOpen}
+          >
+            {getTranslation('editor.addBlock', currentLanguage)}
+          </Button>
         </Box>
 
         {/* Block Editor */}
