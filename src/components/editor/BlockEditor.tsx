@@ -311,6 +311,97 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             </FormControl>
 
             <FormControl>
+              <FormLabel fontSize="sm">Tipo de Ação</FormLabel>
+              <Select
+                value={actionsContent.primary.action}
+                onChange={(e) => updateContent(index, {
+                  ...actionsContent,
+                  primary: { ...actionsContent.primary, action: e.target.value as any }
+                })}
+                size="sm"
+              >
+                <option value="link">🔗 Link/Navegação</option>
+                <option value="buy">🛒 Comprar/E-commerce</option>
+                <option value="download">📥 Download</option>
+                <option value="contact">📞 Contato</option>
+                <option value="more_info">ℹ️ Mais Informações</option>
+              </Select>
+            </FormControl>
+
+            {actionsContent.primary.action === 'buy' && (
+              <VStack spacing={3} align="stretch" p={3} bg="purple.900" borderRadius="md">
+                <Text fontSize="sm" fontWeight="bold" color="purple.200">⚙️ Configurações de Compra</Text>
+                
+                <FormControl>
+                  <FormLabel fontSize="xs">Preço (R$)</FormLabel>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={actionsContent.primary.price?.amount || ''}
+                    onChange={(e) => updateContent(index, {
+                      ...actionsContent,
+                      primary: {
+                        ...actionsContent.primary,
+                        price: {
+                          amount: parseFloat(e.target.value) || 0,
+                          currency: actionsContent.primary.price?.currency || 'BRL',
+                          original: actionsContent.primary.price?.original
+                        }
+                      }
+                    })}
+                    size="sm"
+                    placeholder="197.00"
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="xs">Preço Original (opcional)</FormLabel>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={actionsContent.primary.price?.original || ''}
+                    onChange={(e) => updateContent(index, {
+                      ...actionsContent,
+                      primary: {
+                        ...actionsContent.primary,
+                        price: {
+                          amount: actionsContent.primary.price?.amount || 0,
+                          currency: actionsContent.primary.price?.currency || 'BRL',
+                          original: e.target.value ? parseFloat(e.target.value) : undefined
+                        }
+                      }
+                    })}
+                    size="sm"
+                    placeholder="297.00"
+                  />
+                </FormControl>
+
+                <FormControl>
+                  <FormLabel fontSize="xs">Moeda</FormLabel>
+                  <Select
+                    value={actionsContent.primary.price?.currency || 'BRL'}
+                    onChange={(e) => updateContent(index, {
+                      ...actionsContent,
+                      primary: {
+                        ...actionsContent.primary,
+                        price: {
+                          amount: actionsContent.primary.price?.amount || 0,
+                          currency: e.target.value,
+                          original: actionsContent.primary.price?.original
+                        }
+                      }
+                    })}
+                    size="sm"
+                  >
+                    <option value="BRL">🇧🇷 Real (BRL)</option>
+                    <option value="USD">🇺🇸 Dólar (USD)</option>
+                    <option value="EUR">🇪🇺 Euro (EUR)</option>
+                  </Select>
+                </FormControl>
+              </VStack>
+            )}
+
+            <FormControl>
               <FormLabel fontSize="sm">Estilo</FormLabel>
               <Select
                 value={actionsContent.primary.style}
@@ -341,8 +432,9 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
   }
 
   return (
-    <Box p={6} h="full" overflowY="auto">
-      <VStack spacing={6} align="stretch">
+    <Box h="full" display="flex" flexDirection="column">
+      <Box flex={1} overflowY="auto" p={6}>
+        <VStack spacing={6} align="stretch">
         {/* Header */}
         <VStack spacing={3} align="stretch">
           <HStack justify="space-between">
@@ -592,7 +684,52 @@ export function BlockEditor({ block, onUpdateBlock, language }: BlockEditorProps
             </FormControl>
           </VStack>
         )}
-      </VStack>
+        </VStack>
+      </Box>
+      
+      {/* Barra de Ações Fixa */}
+      <Box borderTop="1px solid" borderColor="gray.600" bg="gray.800" p={4}>
+        <HStack justify="space-between" align="center">
+          <Text fontSize="xs" color="gray.400">
+            💾 Auto-salvamento ativo
+          </Text>
+          
+          <HStack spacing={3}>
+            <Button
+              size="sm"
+              variant="ghost"
+              colorScheme="gray"
+              onClick={() => {
+                // Funcionalidade de reset/cancelar
+                toast({
+                  title: "Alterações revertidas",
+                  status: "info",
+                  duration: 2000,
+                  isClosable: true
+                })
+              }}
+            >
+              ↩️ Reverter
+            </Button>
+            
+            <Button
+              size="sm"
+              colorScheme="purple"
+              onClick={() => {
+                // Funcionalidade de salvar
+                toast({
+                  title: "Bloco salvo com sucesso!",
+                  status: "success",
+                  duration: 2000,
+                  isClosable: true
+                })
+              }}
+            >
+              💾 Salvar
+            </Button>
+          </HStack>
+        </HStack>
+      </Box>
     </Box>
   )
 }

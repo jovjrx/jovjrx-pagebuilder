@@ -68,6 +68,8 @@ export function BlocksEditor({
   // UI State
   const toast = useToast()
   const { isOpen: isPreviewOpen, onOpen: onPreviewOpen, onClose: onPreviewClose } = useDisclosure()
+  const { isOpen: isBlockTypeModalOpen, onOpen: onBlockTypeModalOpen, onClose: onBlockTypeModalClose } = useDisclosure()
+  const [isPreviewMode, setIsPreviewMode] = useState(false)
 
   // Initialize Firebase and load blocks
   useEffect(() => {
@@ -275,6 +277,17 @@ export function BlocksEditor({
             </HStack>
 
             <HStack spacing={3}>
+              {/* Preview/Edit Toggle */}
+              <Button
+                size="sm"
+                leftIcon={<ViewIcon />}
+                colorScheme={isPreviewMode ? 'green' : 'gray'}
+                variant={isPreviewMode ? 'solid' : 'outline'}
+                onClick={() => setIsPreviewMode(!isPreviewMode)}
+              >
+                {isPreviewMode ? 'Visualização' : 'Edição'}
+              </Button>
+
               {/* Language Selector */}
               {!hideLanguageSelector && (
                 <Select
@@ -326,14 +339,14 @@ export function BlocksEditor({
       {/* Main Content */}
       <HStack align="stretch" spacing={0} h={hideHeader ? "100vh" : "calc(100vh - 73px)"}>
         {/* Blocks List */}
-        <Box w="300px" bg="gray.800" borderRight="1px solid" borderColor="gray.700" overflowY="auto">
+        <Box w="300px" bg="gray.800" borderRadius="lg" m={2}>
           <VStack spacing={4} p={4} align="stretch">
             <Button
               leftIcon={<AddIcon />}
               colorScheme="purple"
               variant="outline"
               size="sm"
-              onClick={() => handleAddBlock('hero')}
+              onClick={onBlockTypeModalOpen}
             >
               {getTranslation('editor.addBlock', currentLanguage)}
             </Button>
@@ -352,7 +365,7 @@ export function BlocksEditor({
         </Box>
 
         {/* Block Editor */}
-        <Box flex={1} bg="gray.900" overflowY="auto">
+        <Box flex={1} bg="gray.900">
           {selectedBlock ? (
             <BlockEditor
               block={selectedBlock}
@@ -383,6 +396,64 @@ export function BlocksEditor({
           )}
         </Box>
       </HStack>
+
+      {/* Block Type Selection Modal */}
+      <Modal isOpen={isBlockTypeModalOpen} onClose={onBlockTypeModalClose}>
+        <ModalOverlay />
+        <ModalContent bg="gray.800" color="white">
+          <ModalHeader>Escolher Tipo de Bloco</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <VStack spacing={3}>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">🚀</Text>}
+                onClick={() => { handleAddBlock('hero'); onBlockTypeModalClose() }}
+                colorScheme="purple"
+                justifyContent="flex-start"
+              >
+                Hero - Seção principal/banner
+              </Button>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">📝</Text>}
+                onClick={() => { handleAddBlock('text'); onBlockTypeModalClose() }}
+                colorScheme="blue"
+                justifyContent="flex-start"
+              >
+                Texto - Conteúdo textual
+              </Button>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">⭐</Text>}
+                onClick={() => { handleAddBlock('features'); onBlockTypeModalClose() }}
+                colorScheme="green"
+                justifyContent="flex-start"
+              >
+                Features - Lista de recursos
+              </Button>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">🎬</Text>}
+                onClick={() => { handleAddBlock('media'); onBlockTypeModalClose() }}
+                colorScheme="orange"
+                justifyContent="flex-start"
+              >
+                Mídia - Imagem/vídeo
+              </Button>
+              <Button
+                w="full"
+                leftIcon={<Text fontSize="lg">🛒</Text>}
+                onClick={() => { handleAddBlock('actions'); onBlockTypeModalClose() }}
+                colorScheme="red"
+                justifyContent="flex-start"
+              >
+                Actions - Botões/CTAs/Compra
+              </Button>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
       {/* Preview Modal */}
       <Modal isOpen={isPreviewOpen} onClose={onPreviewClose} size="full">
