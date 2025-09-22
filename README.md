@@ -196,6 +196,13 @@ service cloud.firestore {
 
 ## Changelog
 
+- 1.8.0
+  - **Save System Overhaul**: Fixed critical UX issues in BlocksEditor save functionality
+  - **Debounced Autosave**: Implemented 1.5 second debounce for autosave to prevent excessive Firebase writes during typing
+  - **Manual Save Fix**: Fixed manual save button not persisting changes when autosave is disabled
+  - **Performance**: Eliminated save-on-keystroke behavior for smooth typing experience
+  - **Memory Management**: Added proper cleanup of timeouts to prevent memory leaks
+
 - 1.7.0
   - Model: Unify list-based content under `type: 'list'` with roles: `feature | testimonial | faq | plan | benefit | stat | detail`.
   - Renderer: Single list renderer branches by `role`. Removed legacy separate content items (features, statistics, details, testimonials).

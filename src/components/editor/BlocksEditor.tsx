@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Box,
   VStack,
@@ -67,6 +67,10 @@ export function BlocksEditor({
   const [isSaving, setIsSaving] = useState(false)
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null)
   
+  // Debounce refs
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hasPendingAutoSaveRef = useRef(false)
+  
   // UI State
   const toast = useToast()
   const { isOpen: isPreviewOpen, onOpen: onPreviewOpen, onClose: onPreviewClose } = useDisclosure()
@@ -92,6 +96,15 @@ export function BlocksEditor({
     initializeAndLoad()
   }, [parentId])
 
+  // Cleanup effect for timeouts
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current)
+      }
+    }
+  }, [])
+
   // Load blocks data
   const loadBlocksData = async () => {
     try {
@@ -115,7 +128,14 @@ export function BlocksEditor({
   }
 
   // Save all blocks
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
+    // Clear any pending autosave
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current)
+      autoSaveTimeoutRef.current = null
+      hasPendingAutoSaveRef.current = false
+    }
+
     setIsSaving(true)
     try {
       // Save each block individually
@@ -139,7 +159,7 @@ export function BlocksEditor({
     } finally {
       setIsSaving(false)
     }
-  }
+  }, [blocks, parentId, collection, currentLanguage, toast, onSave])
 
   // Handle errors
   const handleError = (error: Error) => {
@@ -192,17 +212,10 @@ export function BlocksEditor({
     }
   }
 
-  // Update block
-  const handleUpdateBlock = async (updatedBlock: Block) => {
+  // Update block with debounced autosave
+  const handleUpdateBlock = useCallback(async (updatedBlock: Block) => {
     try {
-      // Save immediately to Firebase if autoSave is enabled
-      if (autoSave) {
-        await saveBlockStandalone({
-          ...updatedBlock,
-          parentId,
-        }, collection)
-      }
-      
+      // Update state immediately for responsive UI
       const updatedBlocks = blocks.map(block => 
         block.id === updatedBlock.id ? updatedBlock : block
       )
@@ -210,18 +223,43 @@ export function BlocksEditor({
       setSelectedBlock(updatedBlock)
       onBlocksChange?.(updatedBlocks)
       
+      // Handle autosave with debounce
       if (autoSave) {
-        toast({
-          title: 'Auto-salvo',
-          status: 'success',
-          duration: 1000,
-        })
+        // Clear existing timeout
+        if (autoSaveTimeoutRef.current) {
+          clearTimeout(autoSaveTimeoutRef.current)
+        }
+        
+        // Set pending flag
+        hasPendingAutoSaveRef.current = true
+        
+        // Setup debounced save (1.5 seconds)
+        autoSaveTimeoutRef.current = setTimeout(async () => {
+          try {
+            await saveBlockStandalone({
+              ...updatedBlock,
+              parentId,
+            }, collection)
+            
+            toast({
+              title: 'Auto-salvo',
+              status: 'success',
+              duration: 1000,
+            })
+          } catch (error) {
+            console.error('Error in autosave:', error)
+            handleError(error as Error)
+          } finally {
+            hasPendingAutoSaveRef.current = false
+            autoSaveTimeoutRef.current = null
+          }
+        }, 1500) // 1.5 second debounce
       }
     } catch (error) {
       console.error('Error updating block:', error)
       handleError(error as Error)
     }
-  }
+  }, [blocks, autoSave, parentId, collection, onBlocksChange, toast])
 
   // Delete block
   const handleDeleteBlock = async (blockId: string) => {
